@@ -1,30 +1,91 @@
-/* Le plateau : la grille, les pierres, et la façon dont elles tombent. */
+/* Le plateau : la grille, la taille des pierres, et tout ce qui brille.
+
+   Une pierre est faite de couches empilées dans le SVG : la couleur pleine,
+   la lumière qui vient du haut-gauche, l'ombre qui tombe à l'opposé, les
+   arêtes de la taille, la table centrale, deux reflets. Aucune n'est animée —
+   c'est la géométrie qui donne la profondeur, pas le mouvement. Le mouvement,
+   lui, est réservé aux moments où il veut dire quelque chose : un balayage de
+   vitrine, un scintillement, une explosion. */
 
 .plateau {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(var(--colonnes), 1fr);
-  gap: var(--espace);
   padding: calc(var(--espace) * 2);
-  background: var(--plateau);
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--plateau-rim) 32%, transparent), transparent 65%),
+    var(--plateau);
   border: 1px solid var(--plateau-rim);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, var(--plateau-rim) 60%, transparent);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  isolation: isolate;
 }
+
+/* Les pierres neuves tombent depuis plusieurs rangs au-dessus du plateau : sans
+   ce cloisonnement, on les verrait flotter par-dessus le tableau de bord avant
+   d'entrer en jeu. Les éclats, eux, vivent dans une couche non découpée et ont
+   le droit de déborder. */
+.grille {
+  display: grid;
+  grid-template-columns: repeat(var(--colonnes), 1fr);
+  gap: var(--espace);
+  overflow: hidden;
+  border-radius: calc(var(--radius) * 0.5);
+}
+
+/* La lumière de la vitrine qui passe lentement sur toute la devanture. Un seul
+   élément pour les soixante-quatre pierres : le scintillement individuel coûte
+   trop cher pour ce qu'il rapporte. */
+.plateau::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 4;
+  background: linear-gradient(102deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.06) 47%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.06) 53%,
+    transparent 58%);
+  background-size: 320% 100%;
+  background-position: 130% 0;
+  mix-blend-mode: screen;
+  animation: balayer 8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes balayer {
+  0%, 62% { background-position: 130% 0; }
+  100% { background-position: -70% 0; }
+}
+
+.plateau.secousse { animation: secouer 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+@keyframes secouer {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(calc(var(--force) * -1px), calc(var(--force) * 0.6px)); }
+  35% { transform: translate(calc(var(--force) * 0.9px), calc(var(--force) * -0.7px)); }
+  55% { transform: translate(calc(var(--force) * -0.7px), calc(var(--force) * 0.4px)); }
+  78% { transform: translate(calc(var(--force) * 0.4px), calc(var(--force) * -0.2px)); }
+}
+
+/* ------------------------------------------------------------- Les alvéoles */
 
 .case {
   position: relative;
   aspect-ratio: 1;
   padding: 0;
   border: 0;
-  border-radius: calc(var(--radius) * 0.45);
+  border-radius: calc(var(--radius) * 0.42);
   background: var(--case);
-  container-type: inline-size;
+  box-shadow:
+    inset 0 3px 7px var(--case-creux),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
   cursor: pointer;
   overflow: visible;
+  container-type: inline-size;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -34,19 +95,33 @@
 .case:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
-  z-index: 4;
+  z-index: 6;
 }
 
-/* La case choisie attend sa voisine : on la soulève, sans la faire clignoter. */
+@media (hover: hover) {
+  .case:not([disabled]):hover .pierre { transform: scale(1.07); }
+}
+
+/* La case choisie est soulevée et cerclée d'or : on la voit du coin de l'œil
+   sans que rien ne clignote. */
+.case[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2px var(--accent), inset 0 3px 7px var(--case-creux);
+}
+
 .case[aria-pressed="true"] .pierre {
-  transform: scale(1.14);
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
+  transform: scale(1.16);
   z-index: 3;
 }
 
+.case[aria-pressed="true"] .pierre svg {
+  filter: drop-shadow(0 5px 9px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px currentColor);
+}
+
+/* ---------------------------------------------------------------- La taille */
+
 .pierre {
   position: absolute;
-  inset: 6%;
+  inset: 5%;
   display: block;
   transition: transform 250ms cubic-bezier(0.3, 0.9, 0.4, 1), opacity 160ms linear;
   will-change: transform;
@@ -56,8 +131,18 @@
   display: block;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22));
+  overflow: visible;
+  filter: saturate(1.12) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
 }
+
+/* Les couches de la pierre, posées une fois pour toutes dans le SVG. */
+.volume { fill: url(#lumiere); }
+.ombre { fill: url(#creux); }
+.aretes { fill: none; stroke: #fff; stroke-opacity: 0.26; stroke-width: 2.2; }
+.table { fill: #fff; fill-opacity: 0.07; stroke: #fff; stroke-opacity: 0.5; stroke-width: 2.4; }
+.glint { fill: #fff; opacity: 0.82; transform: rotate(-28deg); transform-origin: 33px 25px; }
+.glint--menu { opacity: 0.32; transform: rotate(-24deg); transform-origin: 66px 70px; }
+.lisere { fill: none; stroke: url(#bord); stroke-width: 3.6; }
 
 .pierre[data-gemme="rubis"] { color: var(--g-rubis); --signe: var(--signe-rubis); }
 .pierre[data-gemme="emeraude"] { color: var(--g-emeraude); --signe: var(--signe-emeraude); }
@@ -67,165 +152,272 @@
 .pierre[data-gemme="quartz"] { color: var(--g-quartz); --signe: var(--signe-quartz); }
 .pierre[data-gemme="onyx"] { color: var(--g-onyx); --signe: var(--signe-onyx); }
 
-/* L'option d'accessibilité : un signe au cœur de la pierre, en plus de la
-   forme et de la couleur. Trois façons de lire la même information. */
+/* Trois façons de lire la même information : la forme, la couleur, la lettre. */
 :root[data-symboles="oui"] .pierre::after {
   content: var(--signe, "");
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  /* Mesuré sur la case, pas sur la police du bouton : le signe grandit avec
-     le plateau au lieu de rester un point minuscule. */
   font-size: 34cqw;
   font-weight: 800;
   line-height: 1;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   pointer-events: none;
 }
 
 /* ------------------------------------------------------------ Les taillées */
 
-.pierre[data-special] { filter: drop-shadow(0 0 6px currentColor); }
+.pierre[data-special] svg {
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px currentColor);
+}
 
 .pierre[data-special]::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: no-repeat center / 100% 100%;
 }
 
-.pierre[data-special="eclat-h"]::before {
-  background-image: linear-gradient(to bottom, transparent 42%, rgba(255, 255, 255, 0.92) 42%, rgba(255, 255, 255, 0.92) 58%, transparent 58%);
-}
-
+.pierre[data-special="eclat-h"]::before,
 .pierre[data-special="eclat-v"]::before {
-  background-image: linear-gradient(to right, transparent 42%, rgba(255, 255, 255, 0.92) 42%, rgba(255, 255, 255, 0.92) 58%, transparent 58%);
+  background: linear-gradient(var(--sens, to bottom),
+    transparent 40%,
+    rgba(255, 255, 255, 0.4) 44%,
+    #fff 48%, #fff 52%,
+    rgba(255, 255, 255, 0.4) 56%,
+    transparent 60%);
+  animation: pulser 1.5s ease-in-out infinite;
 }
+
+.pierre[data-special="eclat-v"]::before { --sens: to right; }
 
 .pierre[data-special="bombe"]::before {
+  inset: 24%;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9);
-  inset: 26%;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.95), 0 0 10px 2px currentColor;
+  animation: pulser 1.2s ease-in-out infinite;
 }
 
-.pierre[data-special="diamant"] {
-  color: #f2f6ff;
-  animation: scintiller 2.6s ease-in-out infinite;
+@keyframes pulser {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
 }
 
-.pierre[data-special="diamant"]::before {
-  background-image: conic-gradient(
-    from 0deg,
-    rgba(255, 120, 140, 0.55),
-    rgba(255, 214, 110, 0.55),
-    rgba(120, 220, 170, 0.55),
-    rgba(120, 180, 255, 0.55),
-    rgba(200, 140, 255, 0.55),
-    rgba(255, 120, 140, 0.55)
-  );
-  mix-blend-mode: screen;
-  clip-path: polygon(20% 12%, 80% 12%, 96% 38%, 50% 95%, 4% 38%);
+/* Le diamant n'a pas de couleur à lui : il les prend toutes. */
+.pierre[data-special="diamant"] .volume { fill: url(#feu); opacity: 0.85; }
+.pierre[data-special="diamant"] { color: #eef4ff; }
+.pierre[data-special="diamant"] svg {
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 10px #fff);
+  animation: respirer 2.4s ease-in-out infinite;
 }
 
-@keyframes scintiller {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7)); }
-  50% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95)); }
+@keyframes respirer {
+  0%, 100% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px #fff); }
+  50% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 18px #fff) drop-shadow(0 0 26px #9fd0ff); }
 }
 
-/* ------------------------------------------------------------- La gangue */
+/* -------------------------------------------------------------- La gangue */
 
 .gangue {
   position: absolute;
-  inset: 4%;
-  border-radius: calc(var(--radius) * 0.3);
+  inset: 3%;
+  border-radius: calc(var(--radius) * 0.28);
   background:
-    repeating-linear-gradient(58deg, transparent 0 6px, rgba(0, 0, 0, 0.09) 6px 12px),
-    var(--gangue);
-  box-shadow: inset 0 2px 0 var(--gangue-clair), inset 0 -3px 6px rgba(0, 0, 0, 0.28);
+    repeating-linear-gradient(58deg, transparent 0 6px, rgba(0, 0, 0, 0.14) 6px 12px),
+    linear-gradient(160deg, var(--gangue-clair), var(--gangue) 55%, color-mix(in srgb, var(--gangue) 70%, #000));
+  box-shadow:
+    inset 0 2px 0 color-mix(in srgb, var(--gangue-clair) 70%, #fff),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
-.gangue[data-couches="2"] { box-shadow: inset 0 2px 0 var(--gangue-clair), inset 0 -3px 6px rgba(0, 0, 0, 0.28), 0 0 0 2px var(--gangue-clair); }
+.gangue[data-couches="2"] { box-shadow: inset 0 2px 0 var(--gangue-clair), inset 0 -4px 8px rgba(0, 0, 0, 0.45), 0 0 0 2px var(--gangue-clair), 0 2px 4px rgba(0, 0, 0, 0.35); }
 
+.gangue[data-couches="1"]::after,
 .gangue.fendue::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(118deg, transparent 46%, rgba(255, 255, 255, 0.75) 47%, transparent 49%),
-    linear-gradient(64deg, transparent 58%, rgba(255, 255, 255, 0.55) 59%, transparent 61%);
+    linear-gradient(118deg, transparent 46%, rgba(255, 255, 255, 0.8) 47%, transparent 49%),
+    linear-gradient(64deg, transparent 58%, rgba(255, 255, 255, 0.6) 59%, transparent 61%);
+}
+
+.gangue.encaisse { animation: encaisser 260ms ease-out; }
+
+@keyframes encaisser {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.1) rotate(-3deg); filter: brightness(2.4); }
+  100% { transform: scale(1); }
 }
 
 /* ---------------------------------------------------------- Les mouvements */
 
 .pierre.part {
-  transform: scale(0.15) rotate(28deg);
+  transform: scale(0.1) rotate(40deg);
   opacity: 0;
 }
 
 .pierre.arrive { transition: none; }
 
-.pierre.naissance {
-  animation: naitre 320ms cubic-bezier(0.2, 1.5, 0.5, 1);
-}
+.pierre.naissance { animation: naitre 420ms cubic-bezier(0.2, 1.6, 0.45, 1); }
 
 @keyframes naitre {
-  from { transform: scale(0.2) rotate(-40deg); }
-  60% { transform: scale(1.22) rotate(6deg); }
-  to { transform: scale(1); }
+  0% { transform: scale(0.15) rotate(-60deg); }
+  55% { transform: scale(1.3) rotate(10deg); }
+  100% { transform: scale(1); }
 }
 
-.case.eclabousse::before {
-  content: "";
-  position: absolute;
-  inset: -10%;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-  animation: souffle 340ms ease-out forwards;
-  pointer-events: none;
-  z-index: 1;
-}
-
-@keyframes souffle {
-  from { transform: scale(0.4); opacity: 0.9; }
-  to { transform: scale(1.5); opacity: 0; }
-}
-
-/* Le refus : la paire part et revient, ça se comprend sans un mot. */
-.case.refus .pierre { animation: refuser 260ms ease-in-out; }
+.case.refus .pierre { animation: refuser 300ms ease-in-out; }
 
 @keyframes refuser {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(var(--refus-x, 0), var(--refus-y, 0)); }
 }
 
+/* ------------------------------------------------------------- Les éclats */
+
+.couche-effets {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 7;
+}
+
+.brisure {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 2px;
+  background: linear-gradient(140deg, #fff, currentColor 55%, color-mix(in srgb, currentColor 50%, #000));
+  box-shadow: 0 0 8px currentColor;
+  animation: projeter var(--duree, 640ms) cubic-bezier(0.15, 0.6, 0.4, 1) forwards;
+}
+
+/* Les éclats gardent leur éclat presque jusqu'au bout : une brisure qui pâlit
+   dès le premier tiers du vol ne se voit pas, elle se devine. */
+@keyframes projeter {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1.15); opacity: 1; }
+  65% { opacity: 0.9; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--tour)) scale(0.3); opacity: 0; }
+}
+
+.onde {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  box-shadow: 0 0 14px currentColor, inset 0 0 10px currentColor;
+  animation: onduler 520ms ease-out forwards;
+}
+
+@keyframes onduler {
+  0% { transform: scale(0.4); opacity: 0.95; }
+  100% { transform: scale(6); opacity: 0; }
+}
+
+.flash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: -50% 0 0 -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, currentColor 35%, transparent 70%);
+  animation: eclater 340ms ease-out forwards;
+}
+
+@keyframes eclater {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Le scintillement : une étoile brève, posée au hasard sur une pierre au
+   hasard. C'est ce qui fait qu'une vitrine n'est jamais tout à fait immobile. */
+.scintille {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  background: #fff;
+  clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+  filter: drop-shadow(0 0 5px #fff);
+  animation: scintiller 900ms ease-in-out forwards;
+}
+
+@keyframes scintiller {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  40% { transform: scale(1) rotate(45deg); opacity: 1; }
+  100% { transform: scale(0.2) rotate(110deg); opacity: 0; }
+}
+
 .gain {
   position: absolute;
-  z-index: 6;
+  z-index: 8;
   pointer-events: none;
-  font-weight: 700;
-  font-size: clamp(0.85rem, 2.6vmin, 1.15rem);
-  color: var(--accent);
-  text-shadow: 0 1px 0 var(--panel), 0 0 8px var(--panel);
-  animation: monter 900ms ease-out forwards;
+  font-weight: 800;
+  font-size: clamp(0.9rem, 2.8vmin, 1.25rem);
+  color: #fff;
+  text-shadow: 0 0 8px currentColor, 0 2px 4px rgba(0, 0, 0, 0.7);
+  animation: monter 950ms ease-out forwards;
 }
 
 @keyframes monter {
-  from { transform: translate(-50%, -30%); opacity: 0; }
-  25% { opacity: 1; }
-  to { transform: translate(-50%, -170%); opacity: 0; }
+  0% { transform: translate(-50%, -20%) scale(0.6); opacity: 0; }
+  25% { transform: translate(-50%, -60%) scale(1.15); opacity: 1; }
+  100% { transform: translate(-50%, -190%) scale(1); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce), (scripting: none) {
-  :root:not([data-mouvement="plein"]) .pierre,
-  :root:not([data-mouvement="plein"]) .case::before { transition-duration: 1ms; animation: none; }
+.banniere {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 36%;
+  z-index: 9;
+  pointer-events: none;
+  text-align: center;
+  font-size: clamp(1.5rem, 7vmin, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  background: var(--metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+  animation: proclamer 1s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+@keyframes proclamer {
+  0% { transform: scale(0.5) rotate(-6deg); opacity: 0; }
+  25% { transform: scale(1.12) rotate(2deg); opacity: 1; }
+  70% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.05); opacity: 0; }
+}
+
+/* ----------------------------------------------------- Quand on veut le calme */
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-mouvement="plein"]) .pierre { transition-duration: 1ms; }
+  :root:not([data-mouvement="plein"]) .plateau::after,
+  :root:not([data-mouvement="plein"]) .pierre[data-special]::before,
+  :root:not([data-mouvement="plein"]) .pierre[data-special="diamant"] svg { animation: none; }
 }
 
 :root[data-mouvement="sobre"] .pierre { transition-duration: 1ms; }
+:root[data-mouvement="sobre"] .plateau::after,
+:root[data-mouvement="sobre"] .plateau.secousse,
 :root[data-mouvement="sobre"] .pierre.naissance,
-:root[data-mouvement="sobre"] .case.eclabousse::before,
-:root[data-mouvement="sobre"] .pierre[data-special="diamant"],
-:root[data-mouvement="sobre"] .gain { animation: none; }
-:root[data-mouvement="sobre"] .gain { display: none; }
+:root[data-mouvement="sobre"] .pierre[data-special]::before,
+:root[data-mouvement="sobre"] .pierre[data-special="diamant"] svg,
+:root[data-mouvement="sobre"] .gangue.encaisse { animation: none; }
+:root[data-mouvement="sobre"] .brisure,
+:root[data-mouvement="sobre"] .onde,
+:root[data-mouvement="sobre"] .flash,
+:root[data-mouvement="sobre"] .scintille,
+:root[data-mouvement="sobre"] .gain,
+:root[data-mouvement="sobre"] .banniere { display: none; }

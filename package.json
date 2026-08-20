@@ -1,10 +1,10 @@
 {
   "name": "diamants",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check js/app.js && node --check js/moteur.js && node --check js/alea.js && node --check js/objectifs.js && node --check js/partage.js && node --check js/rendu.js && node --check js/themes.js && node --check js/storage.js"
+    "check": "node --check js/app.js && node --check js/moteur.js && node --check js/alea.js && node --check js/objectifs.js && node --check js/partage.js && node --check js/rendu.js && node --check js/son.js && node --check js/themes.js && node --check js/storage.js"
   }
 }

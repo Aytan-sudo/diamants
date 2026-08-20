@@ -1,188 +1,213 @@
 /* Diamants — les ambiances, et les jeux de pierres.
+
    Deux réglages indépendants : l'ambiance habille la page, le jeu de pierres
    colore les gemmes. Dans un match-3 la couleur est une règle du jeu, pas une
-   décoration : elle ne doit pas changer parce qu'on a préféré un fond sombre.
-   Chaque bloc redéclare tout, aucune ambiance n'hérite d'une autre. */
+   décoration : elle ne doit pas changer parce qu'on a préféré un autre fond.
+
+   Les ambiances sont sombres, sauf une. Ce n'est pas une coquetterie : une
+   pierre ne brille que sur du velours. Sur un fond clair, le même dégradé et
+   la même lueur passent pour de la buée. Chaque bloc redéclare tout, aucune
+   ambiance n'hérite d'une autre. */
 
 :root {
-  --radius: 16px;
+  --radius: 18px;
   --espace: clamp(3px, 0.9vmin, 7px);
 }
 
-/* ------------------------------------------------------------------ Écrin */
+/* --------------------------------------------------------- Écrin (velours) */
 
 :root,
 :root[data-ambiance="ecrin"] {
+  color-scheme: dark;
+  --bg: #0c0a18;
+  --halo: #2c2059;
+  --halo-bis: #16265c;
+  --panel: #191533;
+  --panel-soft: #241d45;
+  --case: #171230;
+  --case-alt: #140f2a;
+  --case-creux: rgba(0, 0, 0, 0.45);
+  --text: #f3edff;
+  --muted: #a99ad2;
+  --border: #302753;
+  --border-vivid: #4a3d7c;
+  --accent: #e8b14a;
+  --accent-soft: #3b2d15;
+  --accent-text: #17100a;
+  --success: #4fd6a8;
+  --danger: #ff7d7d;
+  --plateau: #130f2a;
+  --plateau-rim: #453874;
+  --metal: linear-gradient(145deg, #e8b14a, #8a6420 45%, #f3cd7c);
+  --gangue: #4b4270;
+  --gangue-clair: #7d70ab;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ------------------------------------------------------------------- Onyx */
+
+:root[data-ambiance="onyx"] {
+  color-scheme: dark;
+  --bg: #08090c;
+  --halo: #1d2430;
+  --halo-bis: #2a2f3a;
+  --panel: #14171d;
+  --panel-soft: #1d222b;
+  --case: #14171e;
+  --case-alt: #111419;
+  --case-creux: rgba(0, 0, 0, 0.5);
+  --text: #eef1f6;
+  --muted: #9aa4b4;
+  --border: #262c36;
+  --border-vivid: #3a4351;
+  --accent: #cfd8e6;
+  --accent-soft: #262d38;
+  --accent-text: #0c0e12;
+  --success: #57d0ac;
+  --danger: #ff8b84;
+  --plateau: #0f1116;
+  --plateau-rim: #39414f;
+  --metal: linear-gradient(145deg, #dfe6f0, #6d7889 45%, #f2f6fb);
+  --gangue: #414957;
+  --gangue-clair: #6b7686;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
+}
+
+/* ---------------------------------------------------------------- Pourpre */
+
+:root[data-ambiance="pourpre"] {
+  color-scheme: dark;
+  --bg: #14060e;
+  --halo: #4a1030;
+  --halo-bis: #611a26;
+  --panel: #24101c;
+  --panel-soft: #331726;
+  --case: #200e19;
+  --case-alt: #1b0b15;
+  --case-creux: rgba(0, 0, 0, 0.45);
+  --text: #ffeef5;
+  --muted: #cf9bb4;
+  --border: #3d1b2c;
+  --border-vivid: #5c2a42;
+  --accent: #f0a6a0;
+  --accent-soft: #45202a;
+  --accent-text: #1c0810;
+  --success: #5cd4a6;
+  --danger: #ff8f86;
+  --plateau: #1b0a14;
+  --plateau-rim: #5f2b41;
+  --metal: linear-gradient(145deg, #f3c0a8, #9a5a4a 45%, #ffdcc6);
+  --gangue: #5a3346;
+  --gangue-clair: #87586e;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* -------------------------------------------------------------- Malachite */
+
+:root[data-ambiance="malachite"] {
+  color-scheme: dark;
+  --bg: #05130f;
+  --halo: #0d3b2c;
+  --halo-bis: #12433f;
+  --panel: #0e2019;
+  --panel-soft: #163025;
+  --case: #0d1e18;
+  --case-alt: #0a1914;
+  --case-creux: rgba(0, 0, 0, 0.45);
+  --text: #e9fbf2;
+  --muted: #8fbfa9;
+  --border: #1b3a2d;
+  --border-vivid: #2c5843;
+  --accent: #f0c96a;
+  --accent-soft: #2c3520;
+  --accent-text: #0a1610;
+  --success: #5ce0af;
+  --danger: #ff8f80;
+  --plateau: #0a1c16;
+  --plateau-rim: #2d5a45;
+  --metal: linear-gradient(145deg, #f2d383, #8d7433 45%, #fdefb9);
+  --gangue: #35564a;
+  --gangue-clair: #5c8272;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ------------------------------------------------ Vitrine (la seule claire) */
+
+:root[data-ambiance="vitrine"] {
   color-scheme: light;
-  --bg: #f6f1e8;
+  --bg: #f2eee7;
+  --halo: #fffdf7;
+  --halo-bis: #efe6d3;
   --panel: #fffdf9;
-  --panel-soft: #efe7d8;
-  --case: #ece2d1;
-  --case-alt: #e6dbc8;
-  --text: #3b3325;
-  --muted: #7b7060;
-  --border: #e0d5c2;
-  --border-vivid: #c9b99e;
-  --accent: #b4762a;
-  --accent-soft: #f6e6cd;
-  --accent-text: #ffffff;
-  --success: #2f8069;
-  --danger: #b4523f;
-  --plateau: #f2ebdd;
-  --plateau-rim: #d8caaf;
-  --gangue: #a3968a;
-  --gangue-clair: #c3b8ac;
-  --shadow: 0 16px 38px rgba(59, 51, 37, 0.14);
-}
-
-/* ---------------------------------------------------------------- Ardoise */
-
-:root[data-ambiance="ardoise"] {
-  color-scheme: light;
-  --bg: #eceff3;
-  --panel: #fafbfd;
-  --panel-soft: #e2e7ed;
-  --case: #dde4ec;
-  --case-alt: #d6dee7;
-  --text: #33404c;
-  --muted: #6f7d8a;
-  --border: #d3dbe3;
-  --border-vivid: #b6c2cd;
-  --accent: #4d7ba3;
-  --accent-soft: #dbe8f3;
-  --accent-text: #ffffff;
-  --success: #35806f;
-  --danger: #b2544a;
-  --plateau: #e7ecf2;
-  --plateau-rim: #c6d1dc;
-  --gangue: #8e9aa6;
-  --gangue-clair: #b3bdc7;
-  --shadow: 0 16px 38px rgba(51, 64, 76, 0.13);
-}
-
-/* ------------------------------------------------------------------ Sauge */
-
-:root[data-ambiance="sauge"] {
-  color-scheme: light;
-  --bg: #eff2e9;
-  --panel: #fafbf5;
-  --panel-soft: #e4e9db;
-  --case: #dfe6d5;
-  --case-alt: #d8e0cc;
-  --text: #35402f;
-  --muted: #6e7a66;
-  --border: #d5ddc9;
-  --border-vivid: #b7c4a8;
-  --accent: #5d8447;
-  --accent-soft: #e0ecd4;
-  --accent-text: #ffffff;
-  --success: #3d7f5f;
-  --danger: #ac5744;
-  --plateau: #e9eee1;
-  --plateau-rim: #c6d2b6;
-  --gangue: #939c8c;
-  --gangue-clair: #b6bdaf;
-  --shadow: 0 16px 38px rgba(53, 64, 47, 0.13);
-}
-
-/* ------------------------------------------------------------------- Nuit */
-
-:root[data-ambiance="nuit"] {
-  color-scheme: dark;
-  --bg: #12161d;
-  --panel: #1b212b;
-  --panel-soft: #232b37;
-  --case: #232b38;
-  --case-alt: #1f2732;
-  --text: #e6ebf3;
-  --muted: #98a4b5;
-  --border: #2d3644;
-  --border-vivid: #3e4a5c;
-  --accent: #6fa8d6;
-  --accent-soft: #26364a;
-  --accent-text: #0f151c;
-  --success: #57bd9c;
-  --danger: #e08272;
-  --plateau: #182029;
-  --plateau-rim: #2b3441;
-  --gangue: #4a5668;
-  --gangue-clair: #6b7789;
-  --shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
-}
-
-/* ------------------------------------------------------------- Crépuscule */
-
-:root[data-ambiance="crepuscule"] {
-  color-scheme: dark;
-  --bg: #17131f;
-  --panel: #211b2c;
-  --panel-soft: #2b2338;
-  --case: #2b2338;
-  --case-alt: #251e31;
-  --text: #ece5f5;
-  --muted: #a496b8;
-  --border: #362c46;
-  --border-vivid: #4a3d5e;
-  --accent: #b989d8;
-  --accent-soft: #342744;
-  --accent-text: #150f1d;
-  --success: #5fbf9f;
-  --danger: #e2827f;
-  --plateau: #1d1727;
-  --plateau-rim: #342a44;
-  --gangue: #59496b;
-  --gangue-clair: #7b6a8e;
-  --shadow: 0 18px 44px rgba(0, 0, 0, 0.52);
+  --panel-soft: #efe8da;
+  --case: #e6dccb;
+  --case-alt: #e1d6c3;
+  --case-creux: rgba(90, 70, 40, 0.16);
+  --text: #2f2718;
+  --muted: #7a6f5c;
+  --border: #ded2bd;
+  --border-vivid: #c1ad8b;
+  --accent: #a9752a;
+  --accent-soft: #f4e6cb;
+  --accent-text: #fffdf7;
+  --success: #2b7d63;
+  --danger: #b04a3c;
+  --plateau: #ece3d2;
+  --plateau-rim: #c9b489;
+  --metal: linear-gradient(145deg, #e3c583, #a4854a 45%, #f6e6bd);
+  --gangue: #a4968a;
+  --gangue-clair: #c6bbb0;
+  --shadow: 0 18px 44px rgba(70, 55, 30, 0.2);
 }
 
 /* =============================================================== Les pierres
 
-   Chaque jeu doit rester lisible sur fond clair comme sur fond sombre : les
-   teintes restent moyennes, ni pastel ni presque noires. La forme fait le
-   travail de distinction, la couleur ne fait que confirmer. */
+   Des teintes lumineuses : elles doivent tenir leur éclat sur du velours sans
+   virer au fluo sur la vitrine. La forme fait le travail de distinction, la
+   couleur ne fait que le confirmer. */
 
 :root,
 :root[data-pierres="joaillerie"] {
-  --g-rubis: #d8384a;
-  --g-emeraude: #2f9e6b;
-  --g-saphir: #3d7fd0;
-  --g-amethyste: #9b62cf;
-  --g-topaze: #e0a326;
-  --g-quartz: #dd7fa8;
-  --g-onyx: #66748c;
+  --g-rubis: #ff4762;
+  --g-emeraude: #27dd8c;
+  --g-saphir: #48a6ff;
+  --g-amethyste: #b96bff;
+  --g-topaze: #ffc32e;
+  --g-quartz: #ff8ed2;
+  --g-onyx: #93a7cc;
 }
 
 :root[data-pierres="mineraux"] {
-  --g-rubis: #c05543;
-  --g-emeraude: #5c9450;
-  --g-saphir: #4c7a9b;
-  --g-amethyste: #8b6ca8;
-  --g-topaze: #c39a4c;
-  --g-quartz: #c08a86;
-  --g-onyx: #6d7078;
+  --g-rubis: #e0604f;
+  --g-emeraude: #6cb75d;
+  --g-saphir: #5d93bb;
+  --g-amethyste: #9b7cc4;
+  --g-topaze: #dcb055;
+  --g-quartz: #dc9a95;
+  --g-onyx: #8a8f9c;
 }
 
 :root[data-pierres="neon"] {
-  --g-rubis: #ff3b6b;
-  --g-emeraude: #12d18a;
-  --g-saphir: #2ea8ff;
-  --g-amethyste: #b45cff;
-  --g-topaze: #ffc21f;
-  --g-quartz: #ff85d0;
-  --g-onyx: #7d8ba6;
+  --g-rubis: #ff2d64;
+  --g-emeraude: #00ffa3;
+  --g-saphir: #29c8ff;
+  --g-amethyste: #c14bff;
+  --g-topaze: #ffe029;
+  --g-quartz: #ff6ad5;
+  --g-onyx: #93b8ff;
 }
 
 :root[data-pierres="contraste"] {
-  --g-rubis: #e01f2d;
-  --g-emeraude: #00875a;
-  --g-saphir: #1050c8;
-  --g-amethyste: #7a2fb0;
-  --g-topaze: #f0a500;
-  --g-quartz: #f26fb2;
-  --g-onyx: #55606f;
+  --g-rubis: #ff1f36;
+  --g-emeraude: #00c46a;
+  --g-saphir: #2f7bff;
+  --g-amethyste: #a13ddb;
+  --g-topaze: #ffb300;
+  --g-quartz: #ff74b8;
+  --g-onyx: #6d7d94;
 }
 
-/* Les signes que l'option « symboles » pose au cœur des pierres.
+/* Les signes que l'option « signes » pose au cœur des pierres.
    Des lettres, et non des formes : la forme de la pierre dit déjà ce qu'elle
    est. Un signe qui la répète n'ajoute rien ; une initiale, si. */
 :root {

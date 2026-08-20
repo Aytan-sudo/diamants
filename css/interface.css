@@ -8,7 +8,13 @@ body {
   padding: clamp(0.6rem, 2.5vmin, 1.6rem);
   display: flex;
   justify-content: center;
-  background: var(--bg);
+  /* Le fond n'est jamais plat : deux halos posent une profondeur de vitrine,
+     et la page cesse de ressembler à une feuille de papier. */
+  background:
+    radial-gradient(95% 60% at 50% -8%, var(--halo), transparent 62%),
+    radial-gradient(75% 55% at 92% 108%, var(--halo-bis), transparent 62%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -53,6 +59,10 @@ h1 {
   margin: 0.1rem 0 0;
   font-size: clamp(1.35rem, 5vmin, 1.9rem);
   letter-spacing: -0.01em;
+  background: var(--metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .outils { display: flex; gap: 0.4rem; }
@@ -80,6 +90,10 @@ h1 {
 }
 
 .bouton-icone:hover { background: var(--panel-soft); }
+
+.bouton-icone[aria-pressed="false"] { color: var(--muted); }
+.bouton-icone[aria-pressed="false"] .ondes-son { display: none; }
+.bouton-icone[aria-pressed="true"] .croix-son { display: none; }
 
 /* ------------------------------------------------------------------ Modes */
 
@@ -139,6 +153,13 @@ h1 {
 .compteur strong {
   font-size: clamp(1.05rem, 4vmin, 1.4rem);
   font-variant-numeric: tabular-nums;
+}
+
+.compteur:first-child strong {
+  background: var(--metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .compteur.presse strong { color: var(--danger); }
@@ -223,6 +244,7 @@ button:disabled { opacity: 0.45; cursor: default; }
 
 .badge {
   margin: 0;
+  border: 1px solid var(--border);
   padding: 0.4rem 0.7rem;
   border-radius: 999px;
   background: var(--accent-soft);
@@ -297,14 +319,20 @@ dialog p { margin: 0 0 0.9rem; line-height: 1.55; }
 }
 
 .pastille {
-  width: 0.85rem;
-  height: 0.85rem;
+  width: 0.9rem;
+  height: 0.9rem;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-vivid);
 }
 
 .echantillon { display: inline-flex; gap: 2px; }
-.echantillon i { width: 0.55rem; height: 0.85rem; border-radius: 2px; display: block; }
+.echantillon i {
+  width: 0.5rem;
+  height: 0.85rem;
+  border-radius: 2px;
+  display: block;
+  box-shadow: 0 0 5px currentColor;
+}
 
 .stats {
   display: grid;

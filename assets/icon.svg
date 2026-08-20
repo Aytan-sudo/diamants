@@ -1,28 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Diamants">
   <defs>
-    <linearGradient id="fond" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f8f3ea"/>
-      <stop offset="1" stop-color="#e9dcc4"/>
+    <radialGradient id="velours" cx="0.5" cy="0.1" r="0.9">
+      <stop offset="0" stop-color="#2c2059"/>
+      <stop offset="0.55" stop-color="#161029"/>
+      <stop offset="1" stop-color="#0a0814"/>
+    </radialGradient>
+    <radialGradient id="lumiere" cx="0.3" cy="0.2" r="0.62">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.44"/>
+      <stop offset="0.38" stop-color="#fff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="creux" x1="0.3" y1="0.05" x2="0.78" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.78" stop-color="#000" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.55"/>
     </linearGradient>
-    <linearGradient id="poli" x1="0.2" y1="0" x2="0.7" y2="1">
-      <stop offset="0" stop-color="#fff" stop-opacity="0.55"/>
-      <stop offset="0.45" stop-color="#fff" stop-opacity="0.05"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0.25"/>
+    <linearGradient id="bord" x1="0.22" y1="0" x2="0.78" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.92"/>
+      <stop offset="0.4" stop-color="#fff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.4"/>
     </linearGradient>
+    <path id="losange" d="M0-96 88 0 0 96-88 0Z"/>
+    <path id="hexa" d="M-40-84h80l44 84-44 84h-80l-44-84Z"/>
+    <path id="brillant" d="M-62-84h124l38 56L0 96-100-28Z"/>
+    <g id="taille">
+      <path d="M0 0 0-140 M0 0 130-70 M0 0 130 70 M0 0 0 140 M0 0-130 70 M0 0-130-70"
+            fill="none" stroke="#fff" stroke-opacity="0.26" stroke-width="4"/>
+    </g>
   </defs>
-  <rect width="512" height="512" rx="108" fill="url(#fond)"/>
-  <g transform="translate(256 268)">
-    <g transform="translate(-84 -46) scale(1.08)">
-      <path d="M0-72 66 0 0 72-66 0Z" fill="#d8384a"/>
-      <path d="M0-72 66 0 0 72-66 0Z" fill="url(#poli)"/>
+
+  <rect width="512" height="512" rx="112" fill="url(#velours)"/>
+
+  <g transform="translate(168 214) scale(0.82)">
+    <clipPath id="cA"><use href="#losange"/></clipPath>
+    <g clip-path="url(#cA)">
+      <use href="#losange" fill="#ff4762"/>
+      <use href="#losange" fill="url(#lumiere)"/>
+      <use href="#losange" fill="url(#creux)"/>
+      <use href="#taille"/>
+      <use href="#losange" transform="scale(.46) translate(0 -12)" fill="#fff" fill-opacity="0.07" stroke="#fff" stroke-opacity="0.5" stroke-width="6"/>
+      <ellipse cx="-32" cy="-46" rx="22" ry="11" fill="#fff" opacity="0.82" transform="rotate(-28 -32 -46)"/>
     </g>
-    <g transform="translate(88 -50) scale(0.92)">
-      <path d="M-30-64h60l34 64-34 64h-60l-34-64Z" fill="#2f9e6b"/>
-      <path d="M-30-64h60l34 64-34 64h-60l-34-64Z" fill="url(#poli)"/>
+    <use href="#losange" fill="none" stroke="url(#bord)" stroke-width="7"/>
+  </g>
+
+  <g transform="translate(342 190) scale(0.66)">
+    <clipPath id="cB"><use href="#hexa"/></clipPath>
+    <g clip-path="url(#cB)">
+      <use href="#hexa" fill="#27dd8c"/>
+      <use href="#hexa" fill="url(#lumiere)"/>
+      <use href="#hexa" fill="url(#creux)"/>
+      <use href="#taille"/>
+      <use href="#hexa" transform="scale(.46) translate(0 -12)" fill="#fff" fill-opacity="0.07" stroke="#fff" stroke-opacity="0.5" stroke-width="8"/>
+      <ellipse cx="-30" cy="-44" rx="24" ry="12" fill="#fff" opacity="0.8" transform="rotate(-28 -30 -44)"/>
     </g>
-    <g transform="translate(14 74) scale(1)">
-      <path d="M-52-46h104l30 34L0 74-82-12Z" fill="#3d7fd0"/>
-      <path d="M-52-46h104l30 34L0 74-82-12Z" fill="url(#poli)"/>
+    <use href="#hexa" fill="none" stroke="url(#bord)" stroke-width="9"/>
+  </g>
+
+  <g transform="translate(272 344) scale(0.86)">
+    <clipPath id="cC"><use href="#brillant"/></clipPath>
+    <g clip-path="url(#cC)">
+      <use href="#brillant" fill="#48a6ff"/>
+      <use href="#brillant" fill="url(#lumiere)"/>
+      <use href="#brillant" fill="url(#creux)"/>
+      <use href="#taille"/>
+      <use href="#brillant" transform="scale(.44) translate(0 -20)" fill="#fff" fill-opacity="0.07" stroke="#fff" stroke-opacity="0.5" stroke-width="7"/>
+      <ellipse cx="-40" cy="-52" rx="26" ry="11" fill="#fff" opacity="0.85" transform="rotate(-22 -40 -52)"/>
     </g>
+    <use href="#brillant" fill="none" stroke="url(#bord)" stroke-width="7"/>
+  </g>
+
+  <g fill="#fff" opacity="0.9">
+    <path d="M96 118 103 141 126 148 103 155 96 178 89 155 66 148 89 141Z"/>
+    <path d="M424 300 429 316 445 321 429 326 424 342 419 326 403 321 419 316Z" opacity="0.75"/>
   </g>
 </svg>

@@ -1,26 +1,26 @@
 // Ambiances et jeux de pierres : deux réglages qui ne se mélangent pas.
 
 export const AMBIANCES = [
-    { cle: 'ecrin', nom: 'Écrin', apercu: '#b4762a' },
-    { cle: 'ardoise', nom: 'Ardoise', apercu: '#4d7ba3' },
-    { cle: 'sauge', nom: 'Sauge', apercu: '#5d8447' },
-    { cle: 'nuit', nom: 'Nuit', apercu: '#1b212b' },
-    { cle: 'crepuscule', nom: 'Crépuscule', apercu: '#b989d8' },
+    { cle: 'ecrin', nom: 'Écrin', fond: '#12102a', accent: '#e8b14a' },
+    { cle: 'onyx', nom: 'Onyx', fond: '#12151b', accent: '#cfd8e6' },
+    { cle: 'pourpre', nom: 'Pourpre', fond: '#24101c', accent: '#f0a6a0' },
+    { cle: 'malachite', nom: 'Malachite', fond: '#0e2019', accent: '#f0c96a' },
+    { cle: 'vitrine', nom: 'Vitrine', fond: '#f2eee7', accent: '#a9752a' },
 ];
 
 export const JEUX_DE_PIERRES = [
-    { cle: 'joaillerie', nom: 'Joaillerie', apercu: ['#d8384a', '#2f9e6b', '#3d7fd0'] },
-    { cle: 'mineraux', nom: 'Minéraux', apercu: ['#c05543', '#5c9450', '#4c7a9b'] },
-    { cle: 'neon', nom: 'Néon', apercu: ['#ff3b6b', '#12d18a', '#2ea8ff'] },
-    { cle: 'contraste', nom: 'Contraste', apercu: ['#e01f2d', '#00875a', '#1050c8'] },
+    { cle: 'joaillerie', nom: 'Joaillerie', apercu: ['#ff4762', '#27dd8c', '#48a6ff'] },
+    { cle: 'mineraux', nom: 'Minéraux', apercu: ['#e0604f', '#6cb75d', '#5d93bb'] },
+    { cle: 'neon', nom: 'Néon', apercu: ['#ff2d64', '#00ffa3', '#29c8ff'] },
+    { cle: 'contraste', nom: 'Contraste', apercu: ['#ff1f36', '#00c46a', '#2f7bff'] },
 ];
 
 const COULEUR_DE_BARRE = {
-    ecrin: '#f6f1e8',
-    ardoise: '#eceff3',
-    sauge: '#eff2e9',
-    nuit: '#12161d',
-    crepuscule: '#17131f',
+    ecrin: '#0c0a18',
+    onyx: '#08090c',
+    pourpre: '#14060e',
+    malachite: '#05130f',
+    vitrine: '#f2eee7',
 };
 
 export const REGLAGES_PAR_DEFAUT = {
@@ -29,6 +29,7 @@ export const REGLAGES_PAR_DEFAUT = {
     difficulte: 'normal',
     symboles: 'non',
     mouvement: 'plein',
+    son: 'oui',
 };
 
 export function appliquer(reglages) {
@@ -38,5 +39,5 @@ export function appliquer(reglages) {
     racine.dataset.symboles = reglages.symboles;
     racine.dataset.mouvement = reglages.mouvement;
     const barre = document.querySelector('meta[name="theme-color"]');
-    if (barre) barre.setAttribute('content', COULEUR_DE_BARRE[reglages.ambiance] ?? '#f6f1e8');
+    if (barre) barre.setAttribute('content', COULEUR_DE_BARRE[reglages.ambiance] ?? '#0c0a18');
 }

@@ -4,8 +4,14 @@
 // mouvements. Le rendu efface, repeint, puis fait glisser les pierres depuis
 // l'endroit d'où elles viennent — y compris de plusieurs rangs au-dessus de
 // l'écran pour celles qui entrent en jeu.
+//
+// C'est aussi ici que vivent les effets : éclats, ondes, scintillements,
+// secousses. Le son en fait partie, parce qu'il obéit au même minutage que
+// l'image : une explosion qui claque un dixième de seconde trop tard sonne
+// comme une erreur.
 
 import { estGangue, estDiamant, DIAMANT } from './moteur.js';
+import * as son from './son.js';
 
 const NOMS = {
     rubis: 'Rubis',
@@ -24,13 +30,19 @@ const NOMS_SPECIAUX = {
     diamant: 'diamant',
 };
 
+const BRISURES_PAR_PIERRE = 5;
+const BRISURES_MAX = 64;
+
 const attendre = (ms) => new Promise((resoudre) => setTimeout(resoudre, ms));
+const teinteDe = (type) => (type ? `var(--g-${type})` : '#eaf2ff');
 
 export function creerRendu(plateau) {
     let boutons = [];
     let colonnes = 8;
     let lignes = 8;
     let sobre = false;
+    let couche = null;
+    let horloge = null;
 
     function monter(partie) {
         colonnes = partie.colonnes;
@@ -39,6 +51,8 @@ export function creerRendu(plateau) {
         plateau.style.setProperty('--lignes', lignes);
         plateau.replaceChildren();
         boutons = [];
+        const grille = document.createElement('div');
+        grille.className = 'grille';
         for (let i = 0; i < colonnes * lignes; i += 1) {
             const bouton = document.createElement('button');
             bouton.type = 'button';
@@ -46,10 +60,15 @@ export function creerRendu(plateau) {
             bouton.dataset.index = String(i);
             bouton.setAttribute('aria-pressed', 'false');
             bouton.tabIndex = i === 0 ? 0 : -1;
-            plateau.append(bouton);
+            grille.append(bouton);
             boutons.push(bouton);
         }
+        plateau.append(grille);
+        couche = document.createElement('div');
+        couche.className = 'couche-effets';
+        plateau.append(couche);
         peindre(partie.cases);
+        lancerScintillements();
     }
 
     function description(cel, i) {
@@ -65,7 +84,7 @@ export function creerRendu(plateau) {
     function contenu(cel) {
         if (estGangue(cel)) {
             const bloc = document.createElement('span');
-            bloc.className = cel.gangue > 1 ? 'gangue' : 'gangue fendue';
+            bloc.className = 'gangue';
             bloc.dataset.couches = String(cel.gangue);
             return bloc;
         }
@@ -93,6 +112,11 @@ export function creerRendu(plateau) {
         };
     }
 
+    const centreDe = (i) => ({
+        x: boutons[i].offsetLeft + boutons[i].offsetWidth / 2,
+        y: boutons[i].offsetTop + boutons[i].offsetHeight / 2,
+    });
+
     function peindre(etat, mouvements = []) {
         for (let i = 0; i < boutons.length; i += 1) {
             const cel = etat[i];
@@ -105,20 +129,20 @@ export function creerRendu(plateau) {
         if (!mouvements.length || sobre) return;
 
         const { x, y } = pas();
+        const glissantes = [];
         for (const mouvement of mouvements) {
             const pierre = boutons[mouvement.vers].firstChild;
-            if (!pierre || !pierre.classList.contains('pierre')) continue;
+            if (!pierre?.classList.contains('pierre')) continue;
             const dx = (mouvement.colonne - (mouvement.vers % colonnes)) * x;
             const dy = (mouvement.ligne - Math.floor(mouvement.vers / colonnes)) * y;
             pierre.classList.add('arrive');
             pierre.style.transform = `translate(${dx}px, ${dy}px)`;
+            glissantes.push(pierre);
         }
         // Un tour de boucle d'affichage plus tard, on relâche : la transition
         // CSS ramène chaque pierre à sa place.
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            for (const mouvement of mouvements) {
-                const pierre = boutons[mouvement.vers].firstChild;
-                if (!pierre || !pierre.classList.contains('pierre')) continue;
+            for (const pierre of glissantes) {
                 pierre.classList.remove('arrive');
                 pierre.style.transform = '';
             }
@@ -138,6 +162,103 @@ export function creerRendu(plateau) {
         cible.focus();
     }
 
+    // ------------------------------------------------------------- Effets
+
+    function poser(element, x, y, duree) {
+        if (!couche) return;
+        element.style.left = `${x}px`;
+        element.style.top = `${y}px`;
+        couche.append(element);
+        setTimeout(() => element.remove(), duree);
+    }
+
+    function eclater(index, type) {
+        const { x, y } = centreDe(index);
+        const teinte = teinteDe(type);
+
+        const flash = document.createElement('span');
+        flash.className = 'flash';
+        flash.style.color = teinte;
+        flash.style.width = `${boutons[index].offsetWidth}px`;
+        flash.style.height = `${boutons[index].offsetHeight}px`;
+        poser(flash, x, y, 400);
+
+        const onde = document.createElement('span');
+        onde.className = 'onde';
+        onde.style.color = teinte;
+        poser(onde, x, y, 520);
+    }
+
+    function projeter(index, type, budget) {
+        const { x, y } = centreDe(index);
+        const teinte = teinteDe(type);
+        const combien = Math.min(BRISURES_PAR_PIERRE, budget);
+        for (let n = 0; n < combien; n += 1) {
+            const angle = (n / combien) * Math.PI * 2 + Math.random() * 0.7;
+            const portee = 26 + Math.random() * 42;
+            const brisure = document.createElement('span');
+            brisure.className = 'brisure';
+            brisure.style.color = teinte;
+            brisure.style.setProperty('--dx', `${Math.cos(angle) * portee}px`);
+            brisure.style.setProperty('--dy', `${Math.sin(angle) * portee + 18}px`);
+            brisure.style.setProperty('--tour', `${Math.round(Math.random() * 540 - 270)}deg`);
+            brisure.style.setProperty('--duree', `${640 + Math.random() * 280}ms`);
+            poser(brisure, x, y, 960);
+        }
+        return combien;
+    }
+
+    function secouer(cascade) {
+        if (sobre || cascade < 2) return;
+        plateau.style.setProperty('--force', String(Math.min(cascade + 1, 8)));
+        plateau.classList.remove('secousse');
+        void plateau.offsetWidth;
+        plateau.classList.add('secousse');
+        setTimeout(() => plateau.classList.remove('secousse'), 400);
+    }
+
+    function proclamer(texte) {
+        if (sobre) return;
+        const banniere = document.createElement('div');
+        banniere.className = 'banniere';
+        banniere.textContent = texte;
+        poser(banniere, 0, 0, 1050);
+        banniere.style.left = '';
+        banniere.style.top = '';
+    }
+
+    function gain(etape) {
+        if (sobre || !etape.points || !etape.effacees.length) return;
+        const milieu = etape.effacees[Math.floor(etape.effacees.length / 2)].index;
+        const { x } = centreDe(milieu);
+        const bulle = document.createElement('span');
+        bulle.className = 'gain';
+        bulle.textContent = etape.cascade > 1 ? `+${etape.points} ×${etape.cascade}` : `+${etape.points}`;
+        bulle.style.color = teinteDe(etape.effacees[0].type);
+        poser(bulle, x, boutons[milieu].offsetTop, 1000);
+    }
+
+    // Une étoile brève, sur une pierre au hasard : une vitrine n'est jamais
+    // tout à fait immobile.
+    function lancerScintillements() {
+        if (horloge) clearInterval(horloge);
+        horloge = setInterval(() => {
+            if (sobre || !couche || document.hidden) return;
+            const bouton = boutons[Math.floor(Math.random() * boutons.length)];
+            if (!bouton?.firstChild?.classList.contains('pierre')) return;
+            const etoile = document.createElement('span');
+            etoile.className = 'scintille';
+            poser(
+                etoile,
+                bouton.offsetLeft + bouton.offsetWidth * (0.25 + Math.random() * 0.5),
+                bouton.offsetTop + bouton.offsetHeight * (0.2 + Math.random() * 0.4),
+                950,
+            );
+        }, 620);
+    }
+
+    // ------------------------------------------------------------ Le coup
+
     function glisser(a, b) {
         const { x, y } = pas();
         const dx = ((b % colonnes) - (a % colonnes)) * x;
@@ -150,55 +271,47 @@ export function creerRendu(plateau) {
 
     async function animerRefus(a, b) {
         selectionner(null);
+        son.refuser();
         if (sobre) return;
         const { x, y } = pas();
         const dx = (((b % colonnes) - (a % colonnes)) * x) / 2;
         const dy = ((Math.floor(b / colonnes) - Math.floor(a / colonnes)) * y) / 2;
         for (const [index, signe] of [[a, 1], [b, -1]]) {
-            const bouton = boutons[index];
-            bouton.style.setProperty('--refus-x', `${dx * signe}px`);
-            bouton.style.setProperty('--refus-y', `${dy * signe}px`);
-            bouton.classList.add('refus');
+            boutons[index].style.setProperty('--refus-x', `${dx * signe}px`);
+            boutons[index].style.setProperty('--refus-y', `${dy * signe}px`);
+            boutons[index].classList.add('refus');
         }
-        await attendre(280);
+        await attendre(300);
         for (const index of [a, b]) boutons[index].classList.remove('refus');
     }
 
-    function gain(etape) {
-        if (sobre || !etape.points) return;
-        const cibles = etape.effacees.map((e) => e.index);
-        if (!cibles.length) return;
-        const milieu = cibles[Math.floor(cibles.length / 2)];
-        const bouton = boutons[milieu];
-        const bulle = document.createElement('span');
-        bulle.className = 'gain';
-        bulle.textContent = etape.cascade > 1 ? `+${etape.points} ×${etape.cascade}` : `+${etape.points}`;
-        bulle.style.left = `${bouton.offsetLeft + bouton.offsetWidth / 2}px`;
-        bulle.style.top = `${bouton.offsetTop}px`;
-        plateau.append(bulle);
-        setTimeout(() => bulle.remove(), 900);
-    }
-
     function marquer(etape) {
+        let budget = BRISURES_MAX;
         for (const efface of etape.effacees) {
             const pierre = boutons[efface.index].firstChild;
             if (pierre?.classList.contains('pierre')) pierre.classList.add('part');
-            if (!sobre) {
-                boutons[efface.index].classList.add('eclabousse');
-                setTimeout(() => boutons[efface.index].classList.remove('eclabousse'), 360);
-            }
+            if (sobre) continue;
+            eclater(efface.index, efface.type);
+            budget -= projeter(efface.index, efface.type, budget);
         }
         for (const brisee of etape.brisees) {
             const bloc = boutons[brisee.index].firstChild;
-            if (bloc?.classList.contains('gangue')) bloc.classList.add('fendue');
+            if (bloc?.classList.contains('gangue')) bloc.classList.add('encaisse', 'fendue');
         }
+    }
+
+    function sonner(etape) {
+        son.alignement(etape.cascade, etape.effacees.length);
+        if (etape.brisees.length) son.gangue(etape.brisees.some((b) => b.couches === 0));
+        for (const creation of etape.creations) son.taillee(creation.special);
     }
 
     async function jouerCoup(etatAvant, resultat) {
         const [a, b] = resultat.echange;
+        if (estDiamant(etatAvant[a]) || estDiamant(etatAvant[b])) son.diamantActive();
         if (!sobre) {
             glisser(a, b);
-            await attendre(200);
+            await attendre(190);
         }
         const apresEchange = etatAvant.map((cel) => (cel ? { ...cel } : null));
         [apresEchange[a], apresEchange[b]] = [apresEchange[b], apresEchange[a]];
@@ -206,10 +319,16 @@ export function creerRendu(plateau) {
 
         for (const etape of resultat.etapes) {
             marquer(etape);
+            sonner(etape);
             gain(etape);
-            await attendre(sobre ? 20 : 200);
+            secouer(etape.cascade);
+            if (etape.cascade >= 3) proclamer(`Cascade ×${etape.cascade}`);
+            await attendre(sobre ? 20 : 210);
             peindre(etape.etat, etape.mouvements);
-            await attendre(sobre ? 20 : 240);
+            for (const creation of etape.creations) {
+                boutons[creation.index].firstChild?.classList.add('naissance');
+            }
+            await attendre(sobre ? 20 : 250);
         }
     }
 
@@ -220,6 +339,7 @@ export function creerRendu(plateau) {
         focaliser,
         animerRefus,
         jouerCoup,
+        proclamer,
         indexDe: (element) => {
             const bouton = element.closest?.('.case');
             return bouton ? Number(bouton.dataset.index) : null;

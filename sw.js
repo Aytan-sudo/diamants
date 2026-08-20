@@ -1,4 +1,4 @@
-const CACHE = 'diamants-v1';
+const CACHE = 'diamants-v2';
 const FICHIERS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const FICHIERS = [
   './js/objectifs.js',
   './js/partage.js',
   './js/rendu.js',
+  './js/son.js',
   './js/themes.js',
   './js/storage.js',
   './manifest.webmanifest',

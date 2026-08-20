@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f6f1e8">
+  <meta name="theme-color" content="#0c0a18">
   <meta name="description" content="Aligne trois pierres précieuses, déclenche les cascades et remplis les commandes du jour. Un défi quotidien identique pour tous, à partager par SMS.">
   <title>Diamants</title>
   <link rel="manifest" href="./manifest.webmanifest">
@@ -16,10 +16,28 @@
 <body>
   <svg class="formes" aria-hidden="true" focusable="false">
     <defs>
-      <linearGradient id="poli" x1="0.2" y1="0" x2="0.7" y2="1">
-        <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
-        <stop offset="0.42" stop-color="#fff" stop-opacity="0.06"/>
-        <stop offset="1" stop-color="#000" stop-opacity="0.26"/>
+      <radialGradient id="lumiere" cx="0.3" cy="0.2" r="0.62">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.44"/>
+        <stop offset="0.38" stop-color="#fff" stop-opacity="0.08"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="creux" x1="0.3" y1="0.05" x2="0.78" y2="1">
+        <stop offset="0" stop-color="#000" stop-opacity="0"/>
+        <stop offset="0.42" stop-color="#000" stop-opacity="0.06"/>
+        <stop offset="0.78" stop-color="#000" stop-opacity="0.3"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0.55"/>
+      </linearGradient>
+      <linearGradient id="bord" x1="0.22" y1="0" x2="0.78" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.92"/>
+        <stop offset="0.4" stop-color="#fff" stop-opacity="0.22"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+      </linearGradient>
+      <linearGradient id="feu" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ff5f8d"/>
+        <stop offset="0.25" stop-color="#ffd166"/>
+        <stop offset="0.5" stop-color="#6ff7c1"/>
+        <stop offset="0.75" stop-color="#6cc3ff"/>
+        <stop offset="1" stop-color="#c78bff"/>
       </linearGradient>
       <path id="t-rubis" d="M50 5 95 50 50 95 5 50Z"/>
       <path id="t-emeraude" d="M30 8 70 8 92 50 70 92 30 92 8 50Z"/>
@@ -29,15 +47,111 @@
       <path id="t-quartz" d="M5 50A45 45 0 1 0 95 50A45 45 0 1 0 5 50Z"/>
       <path id="t-onyx" d="M50 8 93 86 7 86Z"/>
       <path id="t-diamant" d="M22 10 78 10 95 38 50 95 5 38Z"/>
+      <clipPath id="c-rubis"><use href="#t-rubis"/></clipPath>
+      <clipPath id="c-emeraude"><use href="#t-emeraude"/></clipPath>
+      <clipPath id="c-saphir"><use href="#t-saphir"/></clipPath>
+      <clipPath id="c-amethyste"><use href="#t-amethyste"/></clipPath>
+      <clipPath id="c-topaze"><use href="#t-topaze"/></clipPath>
+      <clipPath id="c-quartz"><use href="#t-quartz"/></clipPath>
+      <clipPath id="c-onyx"><use href="#t-onyx"/></clipPath>
+      <clipPath id="c-diamant"><use href="#t-diamant"/></clipPath>
     </defs>
-    <symbol id="forme-rubis" viewBox="0 0 100 100"><use href="#t-rubis" fill="currentColor"/><use href="#t-rubis" fill="url(#poli)"/></symbol>
-    <symbol id="forme-emeraude" viewBox="0 0 100 100"><use href="#t-emeraude" fill="currentColor"/><use href="#t-emeraude" fill="url(#poli)"/></symbol>
-    <symbol id="forme-saphir" viewBox="0 0 100 100"><use href="#t-saphir" fill="currentColor"/><use href="#t-saphir" fill="url(#poli)"/></symbol>
-    <symbol id="forme-amethyste" viewBox="0 0 100 100"><use href="#t-amethyste" fill="currentColor"/><use href="#t-amethyste" fill="url(#poli)"/></symbol>
-    <symbol id="forme-topaze" viewBox="0 0 100 100"><use href="#t-topaze" fill="currentColor"/><use href="#t-topaze" fill="url(#poli)"/></symbol>
-    <symbol id="forme-quartz" viewBox="0 0 100 100"><use href="#t-quartz" fill="currentColor"/><use href="#t-quartz" fill="url(#poli)"/></symbol>
-    <symbol id="forme-onyx" viewBox="0 0 100 100"><use href="#t-onyx" fill="currentColor"/><use href="#t-onyx" fill="url(#poli)"/></symbol>
-    <symbol id="forme-diamant" viewBox="0 0 100 100"><use href="#t-diamant" fill="currentColor"/><use href="#t-diamant" fill="url(#poli)"/></symbol>
+    <symbol id="forme-rubis" viewBox="0 0 100 100">
+      <g clip-path="url(#c-rubis)">
+        <use href="#t-rubis" fill="currentColor"/>
+        <use href="#t-rubis" class="volume"/>
+        <use href="#t-rubis" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-rubis" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-rubis" class="lisere"/>
+    </symbol>
+    <symbol id="forme-emeraude" viewBox="0 0 100 100">
+      <g clip-path="url(#c-emeraude)">
+        <use href="#t-emeraude" fill="currentColor"/>
+        <use href="#t-emeraude" class="volume"/>
+        <use href="#t-emeraude" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-emeraude" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-emeraude" class="lisere"/>
+    </symbol>
+    <symbol id="forme-saphir" viewBox="0 0 100 100">
+      <g clip-path="url(#c-saphir)">
+        <use href="#t-saphir" fill="currentColor"/>
+        <use href="#t-saphir" class="volume"/>
+        <use href="#t-saphir" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-saphir" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-saphir" class="lisere"/>
+    </symbol>
+    <symbol id="forme-amethyste" viewBox="0 0 100 100">
+      <g clip-path="url(#c-amethyste)">
+        <use href="#t-amethyste" fill="currentColor"/>
+        <use href="#t-amethyste" class="volume"/>
+        <use href="#t-amethyste" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-amethyste" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-amethyste" class="lisere"/>
+    </symbol>
+    <symbol id="forme-topaze" viewBox="0 0 100 100">
+      <g clip-path="url(#c-topaze)">
+        <use href="#t-topaze" fill="currentColor"/>
+        <use href="#t-topaze" class="volume"/>
+        <use href="#t-topaze" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-topaze" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-topaze" class="lisere"/>
+    </symbol>
+    <symbol id="forme-quartz" viewBox="0 0 100 100">
+      <g clip-path="url(#c-quartz)">
+        <use href="#t-quartz" fill="currentColor"/>
+        <use href="#t-quartz" class="volume"/>
+        <use href="#t-quartz" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-quartz" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-quartz" class="lisere"/>
+    </symbol>
+    <symbol id="forme-onyx" viewBox="0 0 100 100">
+      <g clip-path="url(#c-onyx)">
+        <use href="#t-onyx" fill="currentColor"/>
+        <use href="#t-onyx" class="volume"/>
+        <use href="#t-onyx" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-onyx" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-onyx" class="lisere"/>
+    </symbol>
+    <symbol id="forme-diamant" viewBox="0 0 100 100">
+      <g clip-path="url(#c-diamant)">
+        <use href="#t-diamant" fill="currentColor"/>
+        <use href="#t-diamant" class="volume"/>
+        <use href="#t-diamant" class="ombre"/>
+        <path class="aretes" d="M50 50 50-16 M50 50 114 14 M50 50 114 86 M50 50 50 116 M50 50-14 86 M50 50-14 14"/>
+        <use href="#t-diamant" class="table" transform="translate(50 44) scale(.46) translate(-50 -50)"/>
+        <ellipse class="glint" cx="33" cy="25" rx="11" ry="5.5"/>
+        <ellipse class="glint glint--menu" cx="66" cy="70" rx="7" ry="3.5"/>
+      </g>
+      <use href="#t-diamant" class="lisere"/>
+    </symbol>
   </svg>
 
   <main class="jeu">
@@ -47,6 +161,9 @@
         <h1>Diamants</h1>
       </div>
       <div class="outils">
+        <button id="bouton-son" class="bouton-icone" type="button" aria-pressed="true" aria-label="Couper le son" title="Son">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.4L12 5.6v12.8L7.4 14.5H4z"/><path class="ondes-son" d="M15.6 9.2a4 4 0 0 1 0 5.6M18.2 6.8a7.5 7.5 0 0 1 0 10.4"/><path class="croix-son" d="m16 9.5 5 5m0-5-5 5"/></svg>
+        </button>
         <button id="bouton-aide" class="bouton-icone" type="button" aria-label="Comment on joue" title="Règles">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.9 2.9 0 1 1 3.4 3.5v1.4"/><path d="M12.5 17.4h.01"/></svg>
         </button>
@@ -143,6 +260,10 @@
     <div class="reglage">
       <span>Signes sur les pierres</span>
       <div class="choix" id="choix-symboles" role="radiogroup" aria-label="Signes sur les pierres"></div>
+    </div>
+    <div class="reglage">
+      <span>Son</span>
+      <div class="choix" id="choix-son" role="radiogroup" aria-label="Son"></div>
     </div>
     <div class="reglage">
       <span>Animations</span>

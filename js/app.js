@@ -13,6 +13,7 @@ import {
 import { texteDuJour, textePartieLibre, lienSms, lireFragment, emojiDe, URL_JEU } from './partage.js';
 import { AMBIANCES, JEUX_DE_PIERRES, REGLAGES_PAR_DEFAUT, appliquer as appliquerThemes } from './themes.js';
 import { lire, ecrire, oublier } from './storage.js';
+import * as son from './son.js';
 import { graineAleatoire } from './alea.js';
 
 const MODES = {
@@ -59,14 +60,26 @@ function sobre() {
 function appliquerReglages() {
     appliquerThemes(reglages);
     rendu.reglerSobriete(sobre());
+    son.reglerSon(reglages.son === 'oui');
+    majBoutonSon();
     ecrire('reglages', reglages);
 }
 
-function pastille(couleur) {
+// Une pastille coupée en deux : le fond de l'ambiance d'un côté, son accent de
+// l'autre. Un seul point de couleur ne dirait rien d'une ambiance sombre.
+function pastille(fond, accent) {
     const point = document.createElement('span');
     point.className = 'pastille';
-    point.style.background = couleur;
+    point.style.background = `linear-gradient(135deg, ${fond} 0 50%, ${accent} 50% 100%)`;
     return point;
+}
+
+function majBoutonSon() {
+    const bouton = el('bouton-son');
+    if (!bouton) return;
+    const allume = reglages.son === 'oui';
+    bouton.setAttribute('aria-pressed', String(allume));
+    bouton.setAttribute('aria-label', allume ? 'Couper le son' : 'Rétablir le son');
 }
 
 function echantillon(couleurs) {
@@ -75,6 +88,7 @@ function echantillon(couleurs) {
     for (const couleur of couleurs) {
         const barre = document.createElement('i');
         barre.style.background = couleur;
+        barre.style.color = couleur;
         boite.append(barre);
     }
     return boite;
@@ -309,6 +323,7 @@ function terminer() {
     sauvegarder();
     const reussi = mode === 'jour' ? defiReussi(partie, defi) : true;
     enregistrerStats(reussi);
+    if (reussi) son.victoire(); else son.echec();
 
     el('marque-fin').textContent = mode !== 'jour' ? '💎' : (reussi ? '💎' : '🪨');
     el('titre-fin').textContent = mode !== 'jour'
@@ -455,6 +470,7 @@ plateau.addEventListener('click', (evenement) => {
     if (selection === null) {
         selection = index;
         rendu.selectionner(index);
+        son.choisir();
         return;
     }
     if (selection === index) {
@@ -542,7 +558,7 @@ function brancher() {
     });
 
     monterChoix(el('choix-ambiance'), AMBIANCES.map((a) => ({
-        ...a, decor: () => pastille(a.apercu),
+        ...a, decor: () => pastille(a.fond, a.accent),
     })), 'ambiance');
     monterChoix(el('choix-pierres'), JEUX_DE_PIERRES.map((j) => ({
         ...j, decor: () => echantillon(j.apercu),
@@ -556,6 +572,16 @@ function brancher() {
     monterChoix(el('choix-mouvement'), [
         { cle: 'plein', nom: 'Complètes' }, { cle: 'sobre', nom: 'Sobres' },
     ], 'mouvement');
+    monterChoix(el('choix-son'), [
+        { cle: 'oui', nom: 'Avec' }, { cle: 'non', nom: 'Sans' },
+    ], 'son', () => { if (reglages.son === 'oui') son.choisir(); });
+
+    el('bouton-son').addEventListener('click', () => {
+        reglages.son = reglages.son === 'oui' ? 'non' : 'oui';
+        appliquerReglages();
+        marquerChoix(el('choix-son'), reglages.son);
+        if (reglages.son === 'oui') son.choisir();
+    });
 
     window.addEventListener('hashchange', demarrerDepuisLien);
 }
@@ -575,6 +601,10 @@ function demarrerDepuisLien() {
         return true;
     }
     return false;
+}
+
+for (const geste of ['pointerdown', 'keydown']) {
+    document.addEventListener(geste, () => son.reveiller(), { once: true });
 }
 
 appliquerReglages();
