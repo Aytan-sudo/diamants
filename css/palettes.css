@@ -1,0 +1,196 @@
+/* Diamants — les ambiances, et les jeux de pierres.
+   Deux réglages indépendants : l'ambiance habille la page, le jeu de pierres
+   colore les gemmes. Dans un match-3 la couleur est une règle du jeu, pas une
+   décoration : elle ne doit pas changer parce qu'on a préféré un fond sombre.
+   Chaque bloc redéclare tout, aucune ambiance n'hérite d'une autre. */
+
+:root {
+  --radius: 16px;
+  --espace: clamp(3px, 0.9vmin, 7px);
+}
+
+/* ------------------------------------------------------------------ Écrin */
+
+:root,
+:root[data-ambiance="ecrin"] {
+  color-scheme: light;
+  --bg: #f6f1e8;
+  --panel: #fffdf9;
+  --panel-soft: #efe7d8;
+  --case: #ece2d1;
+  --case-alt: #e6dbc8;
+  --text: #3b3325;
+  --muted: #7b7060;
+  --border: #e0d5c2;
+  --border-vivid: #c9b99e;
+  --accent: #b4762a;
+  --accent-soft: #f6e6cd;
+  --accent-text: #ffffff;
+  --success: #2f8069;
+  --danger: #b4523f;
+  --plateau: #f2ebdd;
+  --plateau-rim: #d8caaf;
+  --gangue: #a3968a;
+  --gangue-clair: #c3b8ac;
+  --shadow: 0 16px 38px rgba(59, 51, 37, 0.14);
+}
+
+/* ---------------------------------------------------------------- Ardoise */
+
+:root[data-ambiance="ardoise"] {
+  color-scheme: light;
+  --bg: #eceff3;
+  --panel: #fafbfd;
+  --panel-soft: #e2e7ed;
+  --case: #dde4ec;
+  --case-alt: #d6dee7;
+  --text: #33404c;
+  --muted: #6f7d8a;
+  --border: #d3dbe3;
+  --border-vivid: #b6c2cd;
+  --accent: #4d7ba3;
+  --accent-soft: #dbe8f3;
+  --accent-text: #ffffff;
+  --success: #35806f;
+  --danger: #b2544a;
+  --plateau: #e7ecf2;
+  --plateau-rim: #c6d1dc;
+  --gangue: #8e9aa6;
+  --gangue-clair: #b3bdc7;
+  --shadow: 0 16px 38px rgba(51, 64, 76, 0.13);
+}
+
+/* ------------------------------------------------------------------ Sauge */
+
+:root[data-ambiance="sauge"] {
+  color-scheme: light;
+  --bg: #eff2e9;
+  --panel: #fafbf5;
+  --panel-soft: #e4e9db;
+  --case: #dfe6d5;
+  --case-alt: #d8e0cc;
+  --text: #35402f;
+  --muted: #6e7a66;
+  --border: #d5ddc9;
+  --border-vivid: #b7c4a8;
+  --accent: #5d8447;
+  --accent-soft: #e0ecd4;
+  --accent-text: #ffffff;
+  --success: #3d7f5f;
+  --danger: #ac5744;
+  --plateau: #e9eee1;
+  --plateau-rim: #c6d2b6;
+  --gangue: #939c8c;
+  --gangue-clair: #b6bdaf;
+  --shadow: 0 16px 38px rgba(53, 64, 47, 0.13);
+}
+
+/* ------------------------------------------------------------------- Nuit */
+
+:root[data-ambiance="nuit"] {
+  color-scheme: dark;
+  --bg: #12161d;
+  --panel: #1b212b;
+  --panel-soft: #232b37;
+  --case: #232b38;
+  --case-alt: #1f2732;
+  --text: #e6ebf3;
+  --muted: #98a4b5;
+  --border: #2d3644;
+  --border-vivid: #3e4a5c;
+  --accent: #6fa8d6;
+  --accent-soft: #26364a;
+  --accent-text: #0f151c;
+  --success: #57bd9c;
+  --danger: #e08272;
+  --plateau: #182029;
+  --plateau-rim: #2b3441;
+  --gangue: #4a5668;
+  --gangue-clair: #6b7789;
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* ------------------------------------------------------------- Crépuscule */
+
+:root[data-ambiance="crepuscule"] {
+  color-scheme: dark;
+  --bg: #17131f;
+  --panel: #211b2c;
+  --panel-soft: #2b2338;
+  --case: #2b2338;
+  --case-alt: #251e31;
+  --text: #ece5f5;
+  --muted: #a496b8;
+  --border: #362c46;
+  --border-vivid: #4a3d5e;
+  --accent: #b989d8;
+  --accent-soft: #342744;
+  --accent-text: #150f1d;
+  --success: #5fbf9f;
+  --danger: #e2827f;
+  --plateau: #1d1727;
+  --plateau-rim: #342a44;
+  --gangue: #59496b;
+  --gangue-clair: #7b6a8e;
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.52);
+}
+
+/* =============================================================== Les pierres
+
+   Chaque jeu doit rester lisible sur fond clair comme sur fond sombre : les
+   teintes restent moyennes, ni pastel ni presque noires. La forme fait le
+   travail de distinction, la couleur ne fait que confirmer. */
+
+:root,
+:root[data-pierres="joaillerie"] {
+  --g-rubis: #d8384a;
+  --g-emeraude: #2f9e6b;
+  --g-saphir: #3d7fd0;
+  --g-amethyste: #9b62cf;
+  --g-topaze: #e0a326;
+  --g-quartz: #dd7fa8;
+  --g-onyx: #66748c;
+}
+
+:root[data-pierres="mineraux"] {
+  --g-rubis: #c05543;
+  --g-emeraude: #5c9450;
+  --g-saphir: #4c7a9b;
+  --g-amethyste: #8b6ca8;
+  --g-topaze: #c39a4c;
+  --g-quartz: #c08a86;
+  --g-onyx: #6d7078;
+}
+
+:root[data-pierres="neon"] {
+  --g-rubis: #ff3b6b;
+  --g-emeraude: #12d18a;
+  --g-saphir: #2ea8ff;
+  --g-amethyste: #b45cff;
+  --g-topaze: #ffc21f;
+  --g-quartz: #ff85d0;
+  --g-onyx: #7d8ba6;
+}
+
+:root[data-pierres="contraste"] {
+  --g-rubis: #e01f2d;
+  --g-emeraude: #00875a;
+  --g-saphir: #1050c8;
+  --g-amethyste: #7a2fb0;
+  --g-topaze: #f0a500;
+  --g-quartz: #f26fb2;
+  --g-onyx: #55606f;
+}
+
+/* Les signes que l'option « symboles » pose au cœur des pierres.
+   Des lettres, et non des formes : la forme de la pierre dit déjà ce qu'elle
+   est. Un signe qui la répète n'ajoute rien ; une initiale, si. */
+:root {
+  --signe-rubis: "R";
+  --signe-emeraude: "E";
+  --signe-saphir: "S";
+  --signe-amethyste: "A";
+  --signe-topaze: "T";
+  --signe-quartz: "Q";
+  --signe-onyx: "O";
+}

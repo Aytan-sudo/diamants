@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1e8">
+  <meta name="description" content="Aligne trois pierres précieuses, déclenche les cascades et remplis les commandes du jour. Un défi quotidien identique pour tous, à partager par SMS.">
+  <title>Diamants</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon.svg">
+  <link rel="stylesheet" href="./css/palettes.css">
+  <link rel="stylesheet" href="./css/plateau.css">
+  <link rel="stylesheet" href="./css/interface.css">
+</head>
+<body>
+  <svg class="formes" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="poli" x1="0.2" y1="0" x2="0.7" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
+        <stop offset="0.42" stop-color="#fff" stop-opacity="0.06"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0.26"/>
+      </linearGradient>
+      <path id="t-rubis" d="M50 5 95 50 50 95 5 50Z"/>
+      <path id="t-emeraude" d="M30 8 70 8 92 50 70 92 30 92 8 50Z"/>
+      <path id="t-saphir" d="M50 6 86 58A36 36 0 0 1 14 58Z"/>
+      <path id="t-amethyste" d="M50 4 61 31 90 27 72 50 90 73 61 69 50 96 39 69 10 73 28 50 10 27 39 31Z"/>
+      <path id="t-topaze" d="M33 5 67 5 95 33 95 67 67 95 33 95 5 67 5 33Z"/>
+      <path id="t-quartz" d="M5 50A45 45 0 1 0 95 50A45 45 0 1 0 5 50Z"/>
+      <path id="t-onyx" d="M50 8 93 86 7 86Z"/>
+      <path id="t-diamant" d="M22 10 78 10 95 38 50 95 5 38Z"/>
+    </defs>
+    <symbol id="forme-rubis" viewBox="0 0 100 100"><use href="#t-rubis" fill="currentColor"/><use href="#t-rubis" fill="url(#poli)"/></symbol>
+    <symbol id="forme-emeraude" viewBox="0 0 100 100"><use href="#t-emeraude" fill="currentColor"/><use href="#t-emeraude" fill="url(#poli)"/></symbol>
+    <symbol id="forme-saphir" viewBox="0 0 100 100"><use href="#t-saphir" fill="currentColor"/><use href="#t-saphir" fill="url(#poli)"/></symbol>
+    <symbol id="forme-amethyste" viewBox="0 0 100 100"><use href="#t-amethyste" fill="currentColor"/><use href="#t-amethyste" fill="url(#poli)"/></symbol>
+    <symbol id="forme-topaze" viewBox="0 0 100 100"><use href="#t-topaze" fill="currentColor"/><use href="#t-topaze" fill="url(#poli)"/></symbol>
+    <symbol id="forme-quartz" viewBox="0 0 100 100"><use href="#t-quartz" fill="currentColor"/><use href="#t-quartz" fill="url(#poli)"/></symbol>
+    <symbol id="forme-onyx" viewBox="0 0 100 100"><use href="#t-onyx" fill="currentColor"/><use href="#t-onyx" fill="url(#poli)"/></symbol>
+    <symbol id="forme-diamant" viewBox="0 0 100 100"><use href="#t-diamant" fill="currentColor"/><use href="#t-diamant" fill="url(#poli)"/></symbol>
+  </svg>
+
+  <main class="jeu">
+    <header class="entete">
+      <div>
+        <p class="surtitre">Pierres précieuses</p>
+        <h1>Diamants</h1>
+      </div>
+      <div class="outils">
+        <button id="bouton-aide" class="bouton-icone" type="button" aria-label="Comment on joue" title="Règles">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.9 2.9 0 1 1 3.4 3.5v1.4"/><path d="M12.5 17.4h.01"/></svg>
+        </button>
+        <button id="bouton-stats" class="bouton-icone" type="button" aria-label="Statistiques" title="Statistiques">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+        </button>
+        <button id="bouton-reglages" class="bouton-icone" type="button" aria-label="Options" title="Options">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="modes" role="group" aria-label="Mode de jeu">
+      <button type="button" data-mode="jour" aria-pressed="true">Du jour</button>
+      <button type="button" data-mode="coups" aria-pressed="false">Coups</button>
+      <button type="button" data-mode="chrono" aria-pressed="false">Chrono</button>
+      <button type="button" data-mode="zen" aria-pressed="false">Zen</button>
+    </div>
+
+    <p id="badge" class="badge" hidden></p>
+
+    <div class="bord">
+      <div class="compteur"><span>Score</span><strong id="valeur-score">0</strong></div>
+      <div class="compteur" id="compteur-reste"><span id="titre-reste">Coups</span><strong id="valeur-reste">—</strong></div>
+      <div class="compteur"><span>Cascade</span><strong id="valeur-cascade">×0</strong></div>
+    </div>
+
+    <ul id="commandes" class="commandes" aria-label="Commandes à remplir"></ul>
+
+    <div id="plateau" class="plateau" role="group" aria-label="Grille de gemmes"></div>
+
+    <div class="rangee">
+      <button id="bouton-rejouer" class="bouton-second" type="button">Nouvelle grille</button>
+      <button id="bouton-partager" class="bouton-principal" type="button">Partager</button>
+    </div>
+
+    <p class="aide">Échange deux pierres voisines pour en aligner trois. <span class="clavier">Flèches pour se déplacer, Entrée pour saisir puis déposer.</span></p>
+  </main>
+
+  <dialog id="dialogue-fin">
+    <div class="marque-fin" id="marque-fin" aria-hidden="true">💎</div>
+    <h2 id="titre-fin">Partie terminée</h2>
+    <p class="resultat" id="resultat-fin"></p>
+    <ul id="commandes-fin" class="commandes"></ul>
+    <div class="actions actions--trois">
+      <button id="fin-fermer" class="bouton-second" type="button">Voir la grille</button>
+      <button id="fin-partager" class="bouton-second" type="button">Partager</button>
+      <button id="fin-rejouer" class="bouton-principal" type="button">Rejouer</button>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-partage">
+    <h2>Envoyer le résultat</h2>
+    <p>Le lien porte la date, jamais la solution : ton correspondant tombera sur exactement la même grille.</p>
+    <pre id="apercu-partage" class="badge" style="white-space:pre-wrap;text-align:left"></pre>
+    <div class="actions actions--trois">
+      <button id="partage-fermer" class="bouton-second" type="button">Fermer</button>
+      <button id="partage-copier" class="bouton-second" type="button">Copier</button>
+      <a id="partage-sms" class="bouton-second lien-bouton">SMS</a>
+      <button id="partage-envoyer" class="bouton-principal" type="button" hidden>Envoyer…</button>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-stats">
+    <h2>Statistiques</h2>
+    <div class="stats">
+      <div><span>Défis réussis</span><strong id="stat-reussis">0</strong></div>
+      <div><span>Défis joués</span><strong id="stat-joues">0</strong></div>
+      <div><span>Série en cours</span><strong id="stat-serie">0</strong></div>
+      <div><span>Meilleure série</span><strong id="stat-record">0</strong></div>
+      <div><span>Meilleur score</span><strong id="stat-score">0</strong></div>
+      <div><span>Plus longue cascade</span><strong id="stat-cascade">×0</strong></div>
+    </div>
+    <div class="actions">
+      <button id="stats-effacer" class="bouton-second" type="button">Tout effacer</button>
+      <button id="stats-fermer" class="bouton-principal" type="button">Fermer</button>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-reglages">
+    <h2>Options</h2>
+    <div class="reglage">
+      <span>Ambiance</span>
+      <div class="choix" id="choix-ambiance" role="radiogroup" aria-label="Ambiance"></div>
+    </div>
+    <div class="reglage">
+      <span>Pierres</span>
+      <div class="choix" id="choix-pierres" role="radiogroup" aria-label="Jeu de pierres"></div>
+    </div>
+    <div class="reglage">
+      <span>Difficulté<br><small style="color:var(--muted)">Parties libres seulement</small></span>
+      <div class="choix" id="choix-difficulte" role="radiogroup" aria-label="Difficulté"></div>
+    </div>
+    <div class="reglage">
+      <span>Signes sur les pierres</span>
+      <div class="choix" id="choix-symboles" role="radiogroup" aria-label="Signes sur les pierres"></div>
+    </div>
+    <div class="reglage">
+      <span>Animations</span>
+      <div class="choix" id="choix-mouvement" role="radiogroup" aria-label="Animations"></div>
+    </div>
+    <div class="actions">
+      <button id="reglages-fermer" class="bouton-principal" type="button">Fermer</button>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-aide">
+    <h2>Comment on joue</h2>
+    <ul class="regles">
+      <li>Échange deux pierres <b>voisines</b> pour en aligner au moins trois. Un échange qui n'aligne rien est refusé et ne coûte pas de coup.</li>
+      <li><b>Quatre</b> en ligne taillent un <b>éclat</b> : effacé, il rase la ligne ou la colonne qui l'a fait naître.</li>
+      <li>Un croisement en <b>L</b> ou en <b>T</b> donne une <b>bombe</b>, qui souffle les huit cases autour d'elle.</li>
+      <li><b>Cinq</b> en ligne donnent un <b>diamant</b>. Échange-le avec n'importe quelle pierre : toute cette couleur quitte le plateau.</li>
+      <li>La <b>gangue</b> ne s'échange pas. Elle se fend quand un alignement la touche, et cède au bout d'une ou deux fois.</li>
+      <li>Chaque cascade multiplie les points. Enchaîner vaut mieux que frapper fort.</li>
+      <li>Le <b>défi du jour</b> est le même pour tout le monde, une seule tentative. Les autres modes se rejouent sans compter.</li>
+    </ul>
+    <div class="actions">
+      <button id="aide-fermer" class="bouton-principal" type="button">J'ai compris</button>
+    </div>
+  </dialog>
+
+  <div id="annonce" class="sr-only" role="status" aria-live="polite"></div>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

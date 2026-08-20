@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Diamants">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8f3ea"/>
+      <stop offset="1" stop-color="#e9dcc4"/>
+    </linearGradient>
+    <linearGradient id="poli" x1="0.2" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#fff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#fond)"/>
+  <g transform="translate(256 268)">
+    <g transform="translate(-84 -46) scale(1.08)">
+      <path d="M0-72 66 0 0 72-66 0Z" fill="#d8384a"/>
+      <path d="M0-72 66 0 0 72-66 0Z" fill="url(#poli)"/>
+    </g>
+    <g transform="translate(88 -50) scale(0.92)">
+      <path d="M-30-64h60l34 64-34 64h-60l-34-64Z" fill="#2f9e6b"/>
+      <path d="M-30-64h60l34 64-34 64h-60l-34-64Z" fill="url(#poli)"/>
+    </g>
+    <g transform="translate(14 74) scale(1)">
+      <path d="M-52-46h104l30 34L0 74-82-12Z" fill="#3d7fd0"/>
+      <path d="M-52-46h104l30 34L0 74-82-12Z" fill="url(#poli)"/>
+    </g>
+  </g>
+</svg>
