@@ -114,6 +114,22 @@ test('l’ambiance par défaut est celle que le CSS sert sans attribut', () => {
     }
 });
 
+test('aucun effet n’est centré par une marge en pourcentage', () => {
+    // Le piège qui a décalé les explosions de 165 px pendant trois versions :
+    // un pourcentage de marge se résout sur la LARGEUR du bloc conteneur, sur
+    // les quatre côtés. `margin-top: -50%` sur un effet posé dans la couche du
+    // plateau valait donc la moitié de la largeur du plateau, pas la moitié de
+    // la hauteur de l'effet. Rien ne le signale : ni erreur, ni avertissement,
+    // et les deux moteurs sont d'accord pour se tromper pareil. Le centrage
+    // d'un élément se fait par `translate`, dont les pourcentages se résolvent
+    // bien sur la taille de l'élément.
+    const styles = `${lire('css/plateau.css')}\n${lire('css/interface.css')}`;
+    const sansCommentaires = styles.replace(/\/\*[\s\S]*?\*\//g, '');
+    const fautives = [...sansCommentaires.matchAll(/(margin[\w-]*)\s*:\s*([^;{}]*%[^;{}]*);/g)]
+        .map(([, propriete, valeur]) => `${propriete}: ${valeur.trim()}`);
+    assert.deepEqual(fautives, []);
+});
+
 test('les proclamations montent, et commencent à la deuxième cascade', () => {
     const rendu = lire('js/rendu.js');
     const echelle = rendu.match(/const PROCLAMATIONS = \[([^\]]+)\]/);

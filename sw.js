@@ -8,7 +8,7 @@
 //
 // Le nom du cache porte la version exacte de package.json : changer de version,
 // c'est changer de cache, et l'ancien est purgé à l'activation.
-const VERSION = 'diamants-1.3.0';
+const VERSION = 'diamants-1.3.1';
 const COQUILLE = [
   './',
   'index.html',

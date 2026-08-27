@@ -353,12 +353,20 @@
 }
 
 /* Le cœur blanc est ce qui fait « claquer » une explosion : sans lui, la
-   couleur seule ressemble à une tache qui grandit. */
+   couleur seule ressemble à une tache qui grandit.
+
+   Le centrage passe par `translate(-50%, -50%)` et non par une marge négative :
+   un pourcentage de marge se résout sur la LARGEUR du bloc conteneur, sur les
+   quatre côtés — un `margin-top: -50%` valait donc la moitié de la largeur du
+   plateau, et l'explosion partait à 165 px au-dessus et à gauche de la pierre.
+   Un `translate` en pourcentage, lui, se résout sur la taille de l'élément.
+   Le décalage est donc répété dans chaque étape de `eclater` : une image clé
+   qui ne redonne pas la translation la perdrait. */
 .flash {
   position: absolute;
   width: 100%;
   height: 100%;
-  margin: -50% 0 0 -50%;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle,
     #fff 0%, #fff 18%,
@@ -370,9 +378,9 @@
 }
 
 @keyframes eclater {
-  0% { transform: scale(0.25); opacity: 1; }
+  0% { transform: translate(-50%, -50%) scale(0.25); opacity: 1; }
   35% { opacity: 1; }
-  100% { transform: scale(3); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
 }
 
 /* Le scintillement : une étoile brève, posée au hasard sur une pierre au

@@ -2,6 +2,22 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.3.1
+
+- **les explosions retombent sur les pierres.** Le flash blanc était centré par
+  `margin: -50% 0 0 -50%` : or un pourcentage de marge se résout sur la
+  *largeur* du bloc conteneur, sur les quatre côtés. Le `margin-top` valait donc
+  la moitié de la largeur du plateau — l'explosion partait à 165 px au-dessus et
+  à gauche de la pierre qui la déclenchait. Le centrage passe par
+  `translate(-50%, -50%)`, dont les pourcentages se résolvent bien sur la taille
+  de l'élément.
+
+  Le défaut existait depuis la 1.0 et n'a sauté aux yeux qu'en 1.3.0, quand le
+  flash a gagné son cœur blanc et son `mix-blend-mode: screen`. Il n'était pas
+  propre à un navigateur : Chrome et WebKit se trompaient identiquement, à
+  0,1 px près. Un test structurel refuse désormais toute marge en pourcentage
+  dans les feuilles du plateau et de l'interface.
+
 ## Version 1.3.0
 
 Direction artistique retravaillée, d'après **Bejeweled 2** : couleurs pures,
