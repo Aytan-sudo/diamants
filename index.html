@@ -2,16 +2,29 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0c0a18">
-  <meta name="description" content="Aligne trois pierres précieuses, déclenche les cascades et remplis les commandes du jour. Un défi quotidien identique pour tous, à partager par SMS.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <title>Diamants</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./assets/icon.svg">
-  <link rel="stylesheet" href="./css/palettes.css">
-  <link rel="stylesheet" href="./css/plateau.css">
-  <link rel="stylesheet" href="./css/interface.css">
+  <meta name="description" content="Aligne trois pierres précieuses, déclenche les cascades et remplis les commandes du jour. Un défi quotidien identique pour tous, à partager par SMS.">
+  <meta name="theme-color" content="#0c0a18" id="couleur-barre">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="stylesheet" href="css/palettes.css">
+  <link rel="stylesheet" href="css/plateau.css">
+  <link rel="stylesheet" href="css/interface.css">
+  <script>
+    /* L'ambiance mémorisée se pose avant le premier rendu. Laissée à app.js,
+       elle arriverait après la peinture : la page s'ouvrirait en Écrin, puis
+       clignoterait vers Vitrine sous les yeux du joueur. */
+    try {
+      const reglages = JSON.parse(localStorage.getItem('diamants:reglages') || '{}') || {};
+      const racine = document.documentElement;
+      if (/^(ecrin|onyx|pourpre|malachite|vitrine)$/.test(reglages.ambiance)) racine.dataset.ambiance = reglages.ambiance;
+      if (/^(joaillerie|mineraux|neon|contraste)$/.test(reglages.pierres)) racine.dataset.pierres = reglages.pierres;
+      if (/^(oui|non)$/.test(reglages.symboles)) racine.dataset.symboles = reglages.symboles;
+      if (/^(plein|sobre)$/.test(reglages.mouvement)) racine.dataset.mouvement = reglages.mouvement;
+    } catch { /* stockage refusé : l'ambiance Écrin reste disponible */ }
+  </script>
 </head>
 <body>
   <svg class="formes" aria-hidden="true" focusable="false">
@@ -267,9 +280,14 @@
       <div class="choix" id="choix-son" role="radiogroup" aria-label="Son"></div>
     </div>
     <div class="reglage">
+      <span>Vibration<br><small style="color:var(--muted)">Un retour bref confirme le coup</small></span>
+      <div class="choix" id="choix-vibration" role="radiogroup" aria-label="Vibration"></div>
+    </div>
+    <div class="reglage">
       <span>Animations</span>
       <div class="choix" id="choix-mouvement" role="radiogroup" aria-label="Animations"></div>
     </div>
+    <p class="version" id="version">Diamants 1.2.0</p>
     <div class="actions">
       <button id="reglages-fermer" class="bouton-principal" type="button">Fermer</button>
     </div>
@@ -292,6 +310,6 @@
   </dialog>
 
   <div id="annonce" class="sr-only" role="status" aria-live="polite"></div>
-  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

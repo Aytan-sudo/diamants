@@ -1,10 +1,11 @@
 {
   "name": "diamants",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check js/app.js && node --check js/moteur.js && node --check js/alea.js && node --check js/objectifs.js && node --check js/partage.js && node --check js/rendu.js && node --check js/son.js && node --check js/themes.js && node --check js/storage.js"
+    "check": "node --check js/app.js && node --check js/alea.js && node --check js/config.js && node --check js/moteur.js && node --check js/objectifs.js && node --check js/partage.js && node --check js/rendu.js && node --check js/son.js && node --check js/storage.js && node --check js/themes.js",
+    "serve": "python3 -m http.server 8770"
   }
 }

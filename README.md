@@ -2,6 +2,32 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.2.0
+
+- **son audible sur téléphone** : les trois bruitages qui passaient sous les
+  300 Hz (refus, gangue détruite, échec) remontent au-dessus du plancher du
+  haut-parleur. Ils gardent leur geste — c'est la chute qui dit non, pas la
+  profondeur ; seules les hauteurs bougent ;
+- **icônes 180/192/512 en PNG** : iOS ignore un apple-touch-icon en SVG et
+  fabriquait une icône d'accueil dégradée ;
+- **plus de clignotement d'ambiance** : un script inline restaure l'ambiance
+  mémorisée avant le premier rendu, au lieu de laisser la page s'ouvrir en
+  Écrin puis basculer ;
+- **vibration** en option, brève, à côté du réglage du son ;
+- **service worker réseau d'abord** : une mise à jour publiée arrive sans
+  manœuvre, le cache ne sert que hors ligne. Il s'appelle désormais
+  `diamants-1.2.0` — la version exacte du paquet ;
+- la version s'affiche au bas des Options, lue depuis le code réellement
+  chargé : si un vieux cache est servi, c'est le vieux numéro qui s'affiche ;
+- `user-scalable=no` et `touch-action: manipulation` : plus de zoom au
+  double-tap sur les boutons ;
+- `npm run serve` sur le port 8770 — un port par jeu, pour que les service
+  workers de la collection cessent de se marcher dessus sur `localhost` ;
+- deux suites de tests structurels : `tests/page.test.js` (concordance des
+  versions, coquille complète, ids de la page, palettes complètes, viewport,
+  manifeste) et `tests/son.test.js`, qui fait tourner le vrai module de son
+  dans un contexte audio factice et refuse toute note sous 300 Hz.
+
 ## Version 1.1.1
 
 - les cibles tactiles de l'interface passent à 44 px (boutons d'en-tête,
@@ -83,19 +109,21 @@ avant que l'œil ne lise le score.
 - `js/son.js` : la synthèse audio, sans un octet d'échantillon ;
 - `js/themes.js` : ambiances et jeux de pierres ;
 - `js/storage.js` : stockage local avec repli en mémoire ;
+- `js/config.js` : le numéro de version, et rien d'autre ;
 - `js/app.js` : modes, entrées, tableau de bord, statistiques ;
 - `css/palettes.css` : les ambiances et les couleurs de pierres, et rien d'autre ;
 - `css/plateau.css` : la grille, la taille des pierres, et tout ce qui brille ;
 - `css/interface.css` : tout ce qui entoure le plateau ;
-- `tests/` : tests Node du moteur et du défi quotidien.
+- `tests/` : tests Node du moteur, du défi quotidien, du son et de la page.
 
 Le moteur ne connaît pas l'écran, le rendu ne connaît pas les règles : chaque étape d'un coup porte l'état complet du plateau et la liste des mouvements, le rendu se contente de rejouer ce récit.
 
 ## Développement
 
 ```bash
-npm test      # tests du moteur et du défi du jour
+npm test      # moteur, défi du jour, son, structure de la page
 npm run check # vérification syntaxique des modules
+npm run serve # http://localhost:8770
 ```
 
 Aucune étape de build : la page se sert telle quelle.

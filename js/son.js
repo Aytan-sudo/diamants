@@ -91,9 +91,13 @@ export function choisir() {
     note({ hauteur: 880, duree: 0.07, forme: 'triangle', force: 0.09 });
 }
 
+// Un refus dit non par sa chute, pas par sa profondeur : sous 300 Hz un
+// haut-parleur de téléphone ne restitue rien, et la scie partait à 190 Hz pour
+// finir à 137 — un non que personne n'entendait en jouant au doigt. Même
+// glissade, une octave et demie plus haut : 460 vers 331 Hz.
 export function refuser() {
     if (!actif) return;
-    note({ hauteur: 190, duree: 0.14, forme: 'sawtooth', force: 0.1, glissando: 0.72 });
+    note({ hauteur: 460, duree: 0.14, forme: 'sawtooth', force: 0.1, glissando: 0.72 });
 }
 
 // Le cœur du plaisir : la cascade monte la gamme. Trois pierres au troisième
@@ -115,10 +119,13 @@ export function taillee(special) {
     });
 }
 
+// Le souffle porte le grain de la pierre et ne bouge pas ; seul le toc qui
+// l'accompagne remonte au-dessus du plancher (520 vers 328 Hz au lieu de 130
+// vers 78, où il n'existait que sur un ordinateur).
 export function gangue(detruite) {
     if (!actif) return;
     souffle({ duree: detruite ? 0.3 : 0.16, force: detruite ? 0.28 : 0.16, coupure: detruite ? 900 : 1800 });
-    if (detruite) note({ hauteur: 130, duree: 0.22, forme: 'sine', force: 0.16, glissando: 0.6 });
+    if (detruite) note({ hauteur: 520, duree: 0.22, forme: 'sine', force: 0.16, glissando: 0.63 });
 }
 
 export function diamantActive() {
@@ -136,9 +143,11 @@ export function victoire() {
     });
 }
 
+// La chute garde ses deux premiers intervalles ; seul le dernier degré monte,
+// parce que lui seul tombait sous le plancher (294 Hz) et amputait la fin.
 export function echec() {
     if (!actif) return;
-    [5, 3, 1].forEach((rang, i) => {
+    [5, 3, 2].forEach((rang, i) => {
         note({ hauteur: degre(rang) / 2, duree: 0.4, forme: 'sine', force: 0.16, retard: i * 0.13 });
     });
 }

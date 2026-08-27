@@ -4,6 +4,7 @@
 // tranche, le rendu montre, le tableau de bord suit. Aucune règle du jeu ne
 // vit ici ; app.js décide seulement quand chaque module parle.
 
+import { VERSION } from './config.js';
 import { creerPartie, jouer, adjacentes } from './moteur.js';
 import { creerRendu } from './rendu.js';
 import {
@@ -72,6 +73,13 @@ function pastille(fond, accent) {
     point.className = 'pastille';
     point.style.background = `linear-gradient(135deg, ${fond} 0 50%, ${accent} 50% 100%)`;
     return point;
+}
+
+// La vibration double le son sans le remplacer : brève, discrète, et coupée
+// par un réglage. `navigator.vibrate` n'existe pas partout — iOS l'ignore — d'où
+// l'appel optionnel plutôt qu'un test de capacité.
+function vibrer(motif) {
+    if (reglages.vibration === 'oui') navigator.vibrate?.(motif);
 }
 
 function majBoutonSon() {
@@ -288,6 +296,7 @@ async function tenter(a, b) {
 
     if (!resultat.valide) {
         if (resultat.raison === 'sansEffet') {
+            vibrer(30);
             await rendu.animerRefus(a, b);
             annoncer("Cet échange n'aligne rien.");
         }
@@ -295,6 +304,7 @@ async function tenter(a, b) {
         return;
     }
 
+    vibrer(12);
     coupsJoues.push([a, b]);
     await rendu.jouerCoup(avant, resultat);
     if (resultat.melanges) {
@@ -324,6 +334,7 @@ function terminer() {
     const reussi = mode === 'jour' ? defiReussi(partie, defi) : true;
     enregistrerStats(reussi);
     if (reussi) son.victoire(); else son.echec();
+    vibrer(reussi ? [30, 45, 30] : 60);
 
     el('marque-fin').textContent = mode !== 'jour' ? '💎' : (reussi ? '💎' : '🪨');
     el('titre-fin').textContent = mode !== 'jour'
@@ -569,6 +580,9 @@ function brancher() {
     monterChoix(el('choix-symboles'), [
         { cle: 'non', nom: 'Sans' }, { cle: 'oui', nom: 'Avec' },
     ], 'symboles');
+    monterChoix(el('choix-vibration'), [
+        { cle: 'oui', nom: 'Avec' }, { cle: 'non', nom: 'Sans' },
+    ], 'vibration', () => { if (reglages.vibration === 'oui') vibrer(12); });
     monterChoix(el('choix-mouvement'), [
         { cle: 'plein', nom: 'Complètes' }, { cle: 'sobre', nom: 'Sobres' },
     ], 'mouvement');
@@ -607,6 +621,7 @@ for (const geste of ['pointerdown', 'keydown']) {
     document.addEventListener(geste, () => son.reveiller(), { once: true });
 }
 
+el('version').textContent = `Diamants ${VERSION}`;
 appliquerReglages();
 brancher();
 if (!demarrerDepuisLien()) changerMode(lire('mode') ?? 'jour');

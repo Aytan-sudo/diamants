@@ -91,6 +91,10 @@ h1 {
 
 .bouton-icone:hover { background: var(--panel-soft); }
 
+/* iOS ignore `user-scalable=no` : sans cette ligne, un double-tap sur un bouton
+   zoome la page au lieu de le presser deux fois. */
+button, .lien-bouton { touch-action: manipulation; }
+
 .bouton-icone[aria-pressed="false"] { color: var(--muted); }
 .bouton-icone[aria-pressed="false"] .ondes-son { display: none; }
 .bouton-icone[aria-pressed="true"] .croix-son { display: none; }
@@ -368,6 +372,13 @@ dialog p { margin: 0 0 0.9rem; line-height: 1.55; }
   cursor: pointer;
 }
 .actions--trois button { font-size: 0.85rem; padding: 0.7rem 0.5rem; }
+
+.version {
+  margin: 1rem 0 -0.4rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
 
 .regles { padding-left: 1.1rem; margin: 0 0 1rem; line-height: 1.6; font-size: 0.92rem; }
 .regles li { margin-bottom: 0.35rem; }

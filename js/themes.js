@@ -30,6 +30,7 @@ export const REGLAGES_PAR_DEFAUT = {
     symboles: 'non',
     mouvement: 'plein',
     son: 'oui',
+    vibration: 'oui',
 };
 
 export function appliquer(reglages) {
