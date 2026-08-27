@@ -2,6 +2,13 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.1.1
+
+- les cibles tactiles de l'interface passent à 44 px (boutons d'en-tête,
+  boutons texte, listes déroulantes), conformément à la convention.
+- les cases du plateau restent à 42 px et le déclarent (`data-cible-libre`) :
+  huit colonnes espacées ne tiennent pas en 44 px sur un écran de 393 px.
+
 ## Version 1.1
 
 - grille 8 × 8, six couleurs de pierres, chacune avec sa propre forme ;
