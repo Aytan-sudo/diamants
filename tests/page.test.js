@@ -98,6 +98,31 @@ test('la collection compte 4 à 6 ambiances, toutes offertes dans les Options', 
     }
 });
 
+test('l’ambiance par défaut est celle que le CSS sert sans attribut', () => {
+    // Piège : `REGLAGES_PAR_DEFAUT` dit Nébuleuse, mais tant que rien n'a posé
+    // `data-ambiance`, c'est le bloc `:root` nu qui peint. Si les deux
+    // divergent, un joueur sans préférence enregistrée voit une palette pendant
+    // le premier rendu et une autre dès que le script inline a tourné.
+    const sansCommentaires = palettes.replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const [attribut, defaut] of [
+        ['ambiance', REGLAGES_PAR_DEFAUT.ambiance],
+        ['pierres', REGLAGES_PAR_DEFAUT.pierres],
+    ]) {
+        const nu = sansCommentaires.match(new RegExp(`:root,\\s*:root\\[data-${attribut}="([\\w-]+)"\\]`));
+        assert.ok(nu, `aucun bloc :root nu pour ${attribut}`);
+        assert.equal(nu[1], defaut, `le CSS sert ${nu[1]} sans attribut, le défaut est ${defaut}`);
+    }
+});
+
+test('les proclamations montent, et commencent à la deuxième cascade', () => {
+    const rendu = lire('js/rendu.js');
+    const echelle = rendu.match(/const PROCLAMATIONS = \[([^\]]+)\]/);
+    assert.ok(echelle, 'pas d’échelle de proclamations');
+    const marches = echelle[1].split(',').filter((m) => m.trim());
+    assert.ok(marches.length >= 4, `${marches.length} marches seulement`);
+    assert.ok(rendu.includes('etape.cascade >= 2'), 'la première cascade enchaînée ne dit rien');
+});
+
 test('l’ambiance mémorisée est posée avant le premier rendu', () => {
     // Sinon la page s'ouvre en Écrin puis clignote vers l'ambiance choisie.
     const tete = page.slice(0, page.indexOf('</head>'));

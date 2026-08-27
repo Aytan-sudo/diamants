@@ -3,9 +3,17 @@
    Une pierre est faite de couches empilées dans le SVG : la couleur pleine,
    la lumière qui vient du haut-gauche, l'ombre qui tombe à l'opposé, les
    arêtes de la taille, la table centrale, deux reflets. Aucune n'est animée —
-   c'est la géométrie qui donne la profondeur, pas le mouvement. Le mouvement,
-   lui, est réservé aux moments où il veut dire quelque chose : un balayage de
-   vitrine, un scintillement, une explosion. */
+   c'est la géométrie qui donne la profondeur, pas le mouvement.
+
+   Le halo, lui, est permanent : chaque pierre pose sa propre couleur autour
+   d'elle. C'est le levier qui fait basculer le plateau du côté de l'arcade,
+   et il coûte un `drop-shadow` par pierre. Son rayon appartient à la palette
+   (`--lueur`), pas à cette feuille : une ambiance claire ne porte pas de halo,
+   il y ferait une bavure au lieu d'une lueur.
+
+   Le mouvement de fond reste tenu par un seul élément pour soixante-quatre
+   pierres — le balayage. Faire miroiter chaque pierre pour elle-même, ce
+   serait soixante-quatre compositions par image sur un GPU de téléphone. */
 
 .plateau {
   position: relative;
@@ -45,19 +53,21 @@
   pointer-events: none;
   z-index: 4;
   background: linear-gradient(102deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.06) 47%,
-    rgba(255, 255, 255, 0.22) 50%,
-    rgba(255, 255, 255, 0.06) 53%,
-    transparent 58%);
+    transparent 34%,
+    rgba(255, 255, 255, 0.08) 42%,
+    rgba(255, 255, 255, 0.2) 47%,
+    rgba(255, 255, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.2) 53%,
+    rgba(255, 255, 255, 0.08) 58%,
+    transparent 66%);
   background-size: 320% 100%;
   background-position: 130% 0;
   mix-blend-mode: screen;
-  animation: balayer 8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation: balayer 4.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
 
 @keyframes balayer {
-  0%, 62% { background-position: 130% 0; }
+  0%, 44% { background-position: 130% 0; }
   100% { background-position: -70% 0; }
 }
 
@@ -114,7 +124,11 @@
 }
 
 .case[aria-pressed="true"] .pierre svg {
-  filter: drop-shadow(0 5px 9px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px currentColor);
+  filter:
+    saturate(1.3)
+    drop-shadow(0 5px 9px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 calc(var(--lueur, 0px) + 6px) currentColor)
+    drop-shadow(0 0 calc(var(--lueur, 0px) + 14px) currentColor);
 }
 
 /* ---------------------------------------------------------------- La taille */
@@ -132,7 +146,10 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: saturate(1.12) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
+  filter:
+    saturate(1.22)
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 var(--lueur, 0px) currentColor);
 }
 
 /* Les couches de la pierre, posées une fois pour toutes dans le SVG. */
@@ -170,7 +187,10 @@
 /* ------------------------------------------------------------ Les taillées */
 
 .pierre[data-special] svg {
-  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px currentColor);
+  filter:
+    saturate(1.3)
+    drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 calc(var(--lueur, 0px) + 5px) currentColor);
 }
 
 .pierre[data-special]::before {
@@ -205,17 +225,27 @@
   50% { opacity: 1; }
 }
 
-/* Le diamant n'a pas de couleur à lui : il les prend toutes. */
-.pierre[data-special="diamant"] .volume { fill: url(#feu); opacity: 0.85; }
+/* Le diamant n'a pas de couleur à lui : il les prend toutes. L'arc-en-ciel du
+   dégradé `#feu` ne peut pas tourner en CSS — mais le faire défiler en teinte
+   revient au même à l'œil, et ne coûte qu'un filtre sur une seule couche. */
+.pierre[data-special="diamant"] .volume {
+  fill: url(#feu);
+  opacity: 0.95;
+  animation: irisier 2.8s linear infinite;
+}
 .pierre[data-special="diamant"] { color: #eef4ff; }
 .pierre[data-special="diamant"] svg {
-  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 10px #fff);
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 12px #fff);
   animation: respirer 2.4s ease-in-out infinite;
 }
 
+@keyframes irisier {
+  to { filter: hue-rotate(360deg); }
+}
+
 @keyframes respirer {
-  0%, 100% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px #fff); }
-  50% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 18px #fff) drop-shadow(0 0 26px #9fd0ff); }
+  0%, 100% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px #fff); }
+  50% { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 22px #fff) drop-shadow(0 0 34px #9fd0ff); }
 }
 
 /* -------------------------------------------------------------- La gangue */
@@ -294,7 +324,7 @@
   margin: -5.5px 0 0 -5.5px;
   border-radius: 2px;
   background: linear-gradient(140deg, #fff, currentColor 55%, color-mix(in srgb, currentColor 50%, #000));
-  box-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 12px currentColor, 0 0 3px #fff;
   animation: projeter var(--duree, 640ms) cubic-bezier(0.15, 0.6, 0.4, 1) forwards;
 }
 
@@ -312,42 +342,50 @@
   height: 12px;
   margin: -6px 0 0 -6px;
   border-radius: 50%;
-  border: 2.5px solid currentColor;
-  box-shadow: 0 0 14px currentColor, inset 0 0 10px currentColor;
-  animation: onduler 520ms ease-out forwards;
+  border: 2.5px solid #fff;
+  box-shadow: 0 0 18px currentColor, 0 0 6px #fff, inset 0 0 12px currentColor;
+  animation: onduler 560ms ease-out forwards;
 }
 
 @keyframes onduler {
-  0% { transform: scale(0.4); opacity: 0.95; }
-  100% { transform: scale(6); opacity: 0; }
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(7); opacity: 0; }
 }
 
+/* Le cœur blanc est ce qui fait « claquer » une explosion : sans lui, la
+   couleur seule ressemble à une tache qui grandit. */
 .flash {
   position: absolute;
   width: 100%;
   height: 100%;
   margin: -50% 0 0 -50%;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, currentColor 35%, transparent 70%);
-  animation: eclater 340ms ease-out forwards;
+  background: radial-gradient(circle,
+    #fff 0%, #fff 18%,
+    color-mix(in srgb, currentColor 70%, #fff) 32%,
+    currentColor 48%,
+    transparent 74%);
+  mix-blend-mode: screen;
+  animation: eclater 380ms cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
 }
 
 @keyframes eclater {
-  0% { transform: scale(0.3); opacity: 1; }
-  100% { transform: scale(2.4); opacity: 0; }
+  0% { transform: scale(0.25); opacity: 1; }
+  35% { opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
 }
 
 /* Le scintillement : une étoile brève, posée au hasard sur une pierre au
    hasard. C'est ce qui fait qu'une vitrine n'est jamais tout à fait immobile. */
 .scintille {
   position: absolute;
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
   background: #fff;
   clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
-  filter: drop-shadow(0 0 5px #fff);
-  animation: scintiller 900ms ease-in-out forwards;
+  filter: drop-shadow(0 0 8px #cfe9ff);
+  animation: scintiller 760ms ease-in-out forwards;
 }
 
 @keyframes scintiller {
@@ -381,14 +419,17 @@
   z-index: 9;
   pointer-events: none;
   text-align: center;
-  font-size: clamp(1.5rem, 7vmin, 2.6rem);
+  font-size: clamp(1.6rem, 8vmin, 3rem);
   font-weight: 900;
   letter-spacing: 0.02em;
+  text-transform: uppercase;
   background: var(--metal);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+  filter:
+    drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 70%, transparent));
   animation: proclamer 1s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
 }
 
@@ -405,6 +446,7 @@
   :root:not([data-mouvement="plein"]) .pierre { transition-duration: 1ms; }
   :root:not([data-mouvement="plein"]) .plateau::after,
   :root:not([data-mouvement="plein"]) .pierre[data-special]::before,
+  :root:not([data-mouvement="plein"]) .pierre[data-special="diamant"] .volume,
   :root:not([data-mouvement="plein"]) .pierre[data-special="diamant"] svg { animation: none; }
 }
 
@@ -413,6 +455,7 @@
 :root[data-mouvement="sobre"] .plateau.secousse,
 :root[data-mouvement="sobre"] .pierre.naissance,
 :root[data-mouvement="sobre"] .pierre[data-special]::before,
+:root[data-mouvement="sobre"] .pierre[data-special="diamant"] .volume,
 :root[data-mouvement="sobre"] .pierre[data-special="diamant"] svg,
 :root[data-mouvement="sobre"] .gangue.encaisse { animation: none; }
 :root[data-mouvement="sobre"] .brisure,

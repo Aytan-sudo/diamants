@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <title>Diamants</title>
   <meta name="description" content="Aligne trois pierres précieuses, déclenche les cascades et remplis les commandes du jour. Un défi quotidien identique pour tous, à partager par SMS.">
-  <meta name="theme-color" content="#0c0a18" id="couleur-barre">
+  <meta name="theme-color" content="#060512" id="couleur-barre">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -19,11 +19,11 @@
     try {
       const reglages = JSON.parse(localStorage.getItem('diamants:reglages') || '{}') || {};
       const racine = document.documentElement;
-      if (/^(ecrin|onyx|pourpre|malachite|vitrine)$/.test(reglages.ambiance)) racine.dataset.ambiance = reglages.ambiance;
-      if (/^(joaillerie|mineraux|neon|contraste)$/.test(reglages.pierres)) racine.dataset.pierres = reglages.pierres;
+      if (/^(nebuleuse|ecrin|onyx|pourpre|malachite|vitrine)$/.test(reglages.ambiance)) racine.dataset.ambiance = reglages.ambiance;
+      if (/^(arcade|joaillerie|mineraux|neon|contraste)$/.test(reglages.pierres)) racine.dataset.pierres = reglages.pierres;
       if (/^(oui|non)$/.test(reglages.symboles)) racine.dataset.symboles = reglages.symboles;
       if (/^(plein|sobre)$/.test(reglages.mouvement)) racine.dataset.mouvement = reglages.mouvement;
-    } catch { /* stockage refusé : l'ambiance Écrin reste disponible */ }
+    } catch { /* stockage refusé : l'ambiance Nébuleuse reste disponible */ }
   </script>
 </head>
 <body>
@@ -287,7 +287,7 @@
       <span>Animations</span>
       <div class="choix" id="choix-mouvement" role="radiogroup" aria-label="Animations"></div>
     </div>
-    <p class="version" id="version">Diamants 1.2.0</p>
+    <p class="version" id="version">Diamants 1.3.0</p>
     <div class="actions">
       <button id="reglages-fermer" class="bouton-principal" type="button">Fermer</button>
     </div>

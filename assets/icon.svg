@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Diamants">
   <defs>
     <radialGradient id="velours" cx="0.5" cy="0.1" r="0.9">
-      <stop offset="0" stop-color="#2c2059"/>
-      <stop offset="0.55" stop-color="#161029"/>
-      <stop offset="1" stop-color="#0a0814"/>
+      <stop offset="0" stop-color="#3d1a72"/>
+      <stop offset="0.55" stop-color="#12102b"/>
+      <stop offset="1" stop-color="#060512"/>
     </radialGradient>
     <radialGradient id="lumiere" cx="0.3" cy="0.2" r="0.62">
       <stop offset="0" stop-color="#fff" stop-opacity="0.44"/>
@@ -34,7 +34,7 @@
   <g transform="translate(168 214) scale(0.82)">
     <clipPath id="cA"><use href="#losange"/></clipPath>
     <g clip-path="url(#cA)">
-      <use href="#losange" fill="#ff4762"/>
+      <use href="#losange" fill="#ff1e3c"/>
       <use href="#losange" fill="url(#lumiere)"/>
       <use href="#losange" fill="url(#creux)"/>
       <use href="#taille"/>
@@ -47,7 +47,7 @@
   <g transform="translate(342 190) scale(0.66)">
     <clipPath id="cB"><use href="#hexa"/></clipPath>
     <g clip-path="url(#cB)">
-      <use href="#hexa" fill="#27dd8c"/>
+      <use href="#hexa" fill="#1ee65a"/>
       <use href="#hexa" fill="url(#lumiere)"/>
       <use href="#hexa" fill="url(#creux)"/>
       <use href="#taille"/>
@@ -60,7 +60,7 @@
   <g transform="translate(272 344) scale(0.86)">
     <clipPath id="cC"><use href="#brillant"/></clipPath>
     <g clip-path="url(#cC)">
-      <use href="#brillant" fill="#48a6ff"/>
+      <use href="#brillant" fill="#2f6bff"/>
       <use href="#brillant" fill="url(#lumiere)"/>
       <use href="#brillant" fill="url(#creux)"/>
       <use href="#taille"/>

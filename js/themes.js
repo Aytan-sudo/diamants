@@ -1,6 +1,7 @@
 // Ambiances et jeux de pierres : deux réglages qui ne se mélangent pas.
 
 export const AMBIANCES = [
+    { cle: 'nebuleuse', nom: 'Nébuleuse', fond: '#0a0724', accent: '#3ee8ff' },
     { cle: 'ecrin', nom: 'Écrin', fond: '#12102a', accent: '#e8b14a' },
     { cle: 'onyx', nom: 'Onyx', fond: '#12151b', accent: '#cfd8e6' },
     { cle: 'pourpre', nom: 'Pourpre', fond: '#24101c', accent: '#f0a6a0' },
@@ -9,6 +10,7 @@ export const AMBIANCES = [
 ];
 
 export const JEUX_DE_PIERRES = [
+    { cle: 'arcade', nom: 'Arcade', apercu: ['#ff1e3c', '#1ee65a', '#2f6bff'] },
     { cle: 'joaillerie', nom: 'Joaillerie', apercu: ['#ff4762', '#27dd8c', '#48a6ff'] },
     { cle: 'mineraux', nom: 'Minéraux', apercu: ['#e0604f', '#6cb75d', '#5d93bb'] },
     { cle: 'neon', nom: 'Néon', apercu: ['#ff2d64', '#00ffa3', '#29c8ff'] },
@@ -16,6 +18,7 @@ export const JEUX_DE_PIERRES = [
 ];
 
 const COULEUR_DE_BARRE = {
+    nebuleuse: '#060512',
     ecrin: '#0c0a18',
     onyx: '#08090c',
     pourpre: '#14060e',
@@ -24,8 +27,8 @@ const COULEUR_DE_BARRE = {
 };
 
 export const REGLAGES_PAR_DEFAUT = {
-    ambiance: 'ecrin',
-    pierres: 'joaillerie',
+    ambiance: 'nebuleuse',
+    pierres: 'arcade',
     difficulte: 'normal',
     symboles: 'non',
     mouvement: 'plein',
@@ -40,5 +43,5 @@ export function appliquer(reglages) {
     racine.dataset.symboles = reglages.symboles;
     racine.dataset.mouvement = reglages.mouvement;
     const barre = document.querySelector('meta[name="theme-color"]');
-    if (barre) barre.setAttribute('content', COULEUR_DE_BARRE[reglages.ambiance] ?? '#0c0a18');
+    if (barre) barre.setAttribute('content', COULEUR_DE_BARRE[reglages.ambiance] ?? '#060512');
 }

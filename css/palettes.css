@@ -16,7 +16,51 @@
 
 /* --------------------------------------------------------- Écrin (velours) */
 
+/* ------------------------------------------------------ Nébuleuse (l'arcade)
+
+   Le fond de l'écran d'arcade : indigo presque noir, deux voiles de nébuleuse
+   qui se croisent — magenta d'un côté, cyan de l'autre — et un champ d'étoiles
+   fixe derrière le plateau. L'or de l'Écrin ne conviendrait pas ici : l'accent
+   est un cyan électrique, et le métal des titres vire au chrome froid. */
+
 :root,
+:root[data-ambiance="nebuleuse"] {
+  color-scheme: dark;
+  --bg: #060512;
+  --halo: #3d1a72;
+  --halo-bis: #0a4c74;
+  --panel: #12102b;
+  --panel-soft: #1c1842;
+  --case: #0f0d24;
+  --case-alt: #0c0a1e;
+  --case-creux: rgba(0, 0, 0, 0.58);
+  --text: #eaf0ff;
+  --muted: #99a5da;
+  --border: #272252;
+  --border-vivid: #453d88;
+  --accent: #3ee8ff;
+  --accent-soft: #0c3a4c;
+  --accent-text: #04141a;
+  --success: #3bf0a8;
+  --danger: #ff6b7d;
+  --plateau: #0a0820;
+  --plateau-rim: #38317c;
+  --metal: linear-gradient(145deg, #7df3ff, #2b8fd6 45%, #c3f6ff);
+  --gangue: #3a3568;
+  --gangue-clair: #7169ad;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.72);
+  --lueur: 8px;
+  --etoiles:
+    radial-gradient(1.3px 1.3px at 24px 18px, rgba(255, 255, 255, 0.92), transparent),
+    radial-gradient(1px 1px at 96px 52px, rgba(198, 224, 255, 0.75), transparent),
+    radial-gradient(1.6px 1.6px at 148px 122px, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 58px 148px, rgba(226, 200, 255, 0.7), transparent),
+    radial-gradient(1.1px 1.1px at 178px 88px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 12px 108px, rgba(180, 220, 255, 0.55), transparent);
+}
+
+/* --------------------------------------------------------- Écrin (velours) */
+
 :root[data-ambiance="ecrin"] {
   color-scheme: dark;
   --bg: #0c0a18;
@@ -42,6 +86,8 @@
   --gangue: #4b4270;
   --gangue-clair: #7d70ab;
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+  --lueur: 7px;
+  --etoiles: none;
 }
 
 /* ------------------------------------------------------------------- Onyx */
@@ -71,6 +117,8 @@
   --gangue: #414957;
   --gangue-clair: #6b7686;
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
+  --lueur: 7px;
+  --etoiles: none;
 }
 
 /* ---------------------------------------------------------------- Pourpre */
@@ -100,6 +148,8 @@
   --gangue: #5a3346;
   --gangue-clair: #87586e;
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.6);
+  --lueur: 7px;
+  --etoiles: none;
 }
 
 /* -------------------------------------------------------------- Malachite */
@@ -129,6 +179,8 @@
   --gangue: #35564a;
   --gangue-clair: #5c8272;
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.6);
+  --lueur: 7px;
+  --etoiles: none;
 }
 
 /* ------------------------------------------------ Vitrine (la seule claire) */
@@ -158,6 +210,8 @@
   --gangue: #a4968a;
   --gangue-clair: #c6bbb0;
   --shadow: 0 18px 44px rgba(70, 55, 30, 0.2);
+  --lueur: 2px;
+  --etoiles: none;
 }
 
 /* =============================================================== Les pierres
@@ -166,7 +220,22 @@
    virer au fluo sur la vitrine. La forme fait le travail de distinction, la
    couleur ne fait que le confirmer. */
 
+/* Arcade : les sept couleurs pures de Bejeweled 2, posées sur les sept noms de
+   pierres sans en renommer aucun — la topaze impériale est orange, la citrine
+   est un quartz jaune, l'onyx blanc existe. Trois chaudes se touchent, comme
+   dans l'original : c'est la forme qui distingue, la couleur qui confirme. */
+
 :root,
+:root[data-pierres="arcade"] {
+  --g-rubis: #ff1e3c;
+  --g-emeraude: #1ee65a;
+  --g-saphir: #2f6bff;
+  --g-amethyste: #b03cff;
+  --g-topaze: #ff8a1e;
+  --g-quartz: #ffe016;
+  --g-onyx: #e8f1ff;
+}
+
 :root[data-pierres="joaillerie"] {
   --g-rubis: #ff4762;
   --g-emeraude: #27dd8c;

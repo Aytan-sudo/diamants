@@ -2,6 +2,42 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.3.0
+
+Direction artistique retravaillée, d'après **Bejeweled 2** : couleurs pures,
+halo permanent, fond d'arcade.
+
+- **ambiance « Nébuleuse »**, nouvelle et par défaut : indigo presque noir,
+  deux voiles de nébuleuse et un champ d'étoiles fixe. L'accent passe de l'or
+  au cyan électrique, le métal des titres au chrome froid ;
+- **jeu de pierres « Arcade »**, nouveau et par défaut : les sept couleurs
+  pures de Bejeweled, posées sur les sept noms existants sans en renommer
+  aucun — la topaze impériale est orange, la citrine est un quartz jaune,
+  l'onyx blanc existe ;
+- **halo permanent** autour de chaque pierre. Son rayon appartient à la
+  palette (`--lueur`), pas au plateau : la Vitrine n'en porte que 2 px, où un
+  halo franc ferait une bavure au lieu d'une lueur ;
+- le **balayage de lumière** passe de 8 à 4,5 secondes et double de largeur ;
+  les **scintillements** vont de 1,6 à 3 par seconde ;
+- **proclamations** à l'échelle de Bejeweled — *Bien !*, *Excellent !*,
+  *Superbe !*, *Prodigieux !*, *Irréel !* — dès la deuxième cascade, à la
+  place du « Cascade ×3 » d'avant ;
+- **explosions** à cœur blanc, anneau plus lumineux, sept éclats par pierre au
+  lieu de cinq ;
+- le **diamant devient un hypercube** : son arc-en-ciel défile en teinte ;
+- **l'icône** reprend les couleurs Arcade et le fond de la Nébuleuse ;
+- les cinq ambiances de la vitrine de bijoutier restent disponibles, ainsi que
+  les quatre jeux de pierres d'origine.
+
+Et, au passage, ce que le nouveau dialogue Options a obligé à régler :
+
+- les pastilles de choix passent de 31 à **44 px** — la règle de la convention,
+  qu'un dialogue fermé cachait au vérificateur iOS ;
+- les réglages passent en colonne (libellé au-dessus, pastilles dessous) : côte
+  à côte, six ambiances à 44 px s'empilaient sur cinq rangs ;
+- le contenu du dialogue **défile** et la rangée d'actions reste collée en bas,
+  si bien que « Fermer » ne part jamais hors de portée, même sur iPhone SE.
+
 ## Version 1.2.0
 
 - **son audible sur téléphone** : les trois bruitages qui passaient sous les
@@ -88,11 +124,21 @@ deux reflets. Aucune de ces couches n'est animée — c'est la géométrie qui d
 la profondeur, et elle ne coûte rien à afficher. Les huit formes partagent la
 même construction : seul le tracé change.
 
-Le mouvement est réservé aux moments où il veut dire quelque chose. Un balayage
-de lumière traverse le plateau toutes les huit secondes — un seul élément pour
-soixante-quatre pierres, là où soixante-quatre scintillements coûteraient cher
-pour ce qu'ils rapportent. Le scintillement, justement, est une étoile brève
-posée au hasard, et il s'arrête dès que l'onglet passe en arrière-plan.
+À cette géométrie s'ajoute un halo permanent : chaque pierre pose sa propre
+couleur autour d'elle. C'est ce qui fait basculer le plateau du côté de
+l'arcade, et la mesure a été une surprise — soixante-quatre `drop-shadow`
+statiques ne coûtent rien du tout, parce que rien ne les repeint tant que les
+pierres ne bougent pas. Son rayon appartient à la palette : la Vitrine, seule
+ambiance claire, n'en porte que 2 px.
+
+Le mouvement de fond, lui, tient en un seul élément pour soixante-quatre
+pierres : un balayage de lumière traverse le plateau toutes les quatre secondes
+et demie. Faire miroiter chaque pierre pour elle-même, comme le fait Bejeweled,
+serait soixante-quatre compositions par image sur un GPU de téléphone. On
+obtient presque le même œil en semant des étoiles brèves — et là encore c'est la
+mesure qui a tranché la cadence : à cinq par seconde, une image sur neuf passait
+au-dessus de 20 ms ; à trois, plus aucune. Les étoiles s'arrêtent dès que
+l'onglet passe en arrière-plan.
 
 Le son est synthétisé à la volée : quelques oscillateurs, une enveloppe, aucun
 fichier. La cascade monte une gamme pentatonique, si bien que la troisième
@@ -107,11 +153,13 @@ avant que l'œil ne lise le score.
 - `js/partage.js` : le message à envoyer, et le lien qui ramène à la bonne grille ;
 - `js/rendu.js` : construction, animation et effets du plateau, sans aucune règle du jeu ;
 - `js/son.js` : la synthèse audio, sans un octet d'échantillon ;
-- `js/themes.js` : ambiances et jeux de pierres ;
+- `js/themes.js` : la liste des ambiances et des jeux de pierres, leur ordre ;
 - `js/storage.js` : stockage local avec repli en mémoire ;
 - `js/config.js` : le numéro de version, et rien d'autre ;
 - `js/app.js` : modes, entrées, tableau de bord, statistiques ;
-- `css/palettes.css` : les ambiances et les couleurs de pierres, et rien d'autre ;
+- `css/palettes.css` : les ambiances et les couleurs de pierres, et rien
+  d'autre — y compris le rayon du halo et le champ d'étoiles, qui sont des
+  propriétés de la palette et non du plateau ;
 - `css/plateau.css` : la grille, la taille des pierres, et tout ce qui brille ;
 - `css/interface.css` : tout ce qui entoure le plateau ;
 - `tests/` : tests Node du moteur, du défi quotidien, du son et de la page.
