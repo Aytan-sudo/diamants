@@ -39,7 +39,7 @@ self.addEventListener('install', (evenement) => {
 self.addEventListener('activate', (evenement) => {
   evenement.waitUntil(
     caches.keys()
-      .then((cles) => Promise.all(cles.filter((cle) => cle !== VERSION).map((cle) => caches.delete(cle))))
+      .then((cles) => Promise.all(cles.filter((cle) => cle.startsWith('diamants-') && cle !== VERSION).map((cle) => caches.delete(cle))))
       .then(() => self.clients.claim()),
   );
 });
