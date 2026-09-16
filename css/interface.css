@@ -422,3 +422,18 @@ dialog p { margin: 0 0 0.9rem; line-height: 1.55; }
   .modes button { font-size: 0.74rem; }
   .commande { font-size: 0.78rem; }
 }
+
+/* Écran court — l'iPhone SE laisse 549 px dans Safari d'iOS 26. À pleine
+   taille, l'habillage mange 464 px et le plateau commençait sous la ligne de
+   flottaison : il fallait défiler pour voir le jeu. Les deux lignes de texte
+   qui expliquent (le bandeau de grille et l'aide, toutes deux reprises dans
+   les Règles) s'effacent, les intervalles se resserrent, et le plateau se
+   plafonne à ce qui reste vraiment. */
+@media (orientation: portrait) and (max-height: 640px) {
+  body { padding: 0.5rem; }
+  .jeu { gap: 0.4rem; }
+  .badge, .aide { display: none; }
+  .commandes { gap: 0.3rem; padding: 0.35rem; }
+  .commande { padding: 0.25rem 0.4rem; font-size: 0.72rem; }
+  .plateau { width: min(100%, calc(100dvh - 330px)); margin-inline: auto; }
+}
