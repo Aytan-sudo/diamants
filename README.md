@@ -2,6 +2,20 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.3.2
+
+- **le jeu entier tient dans un iPhone SE.** Safari d'iOS 26 n'y laisse que
+  549 px de haut, et l'habillage en mangeait 464 : le plateau commençait sous
+  la ligne de flottaison, il fallait défiler pour voir le jeu et la moitié des
+  pierres restaient cachées. Sous 640 px de hauteur, en portrait, le bandeau de
+  grille et la ligne d'aide s'effacent — tous deux repris dans les Règles —,
+  les intervalles et les commandes se resserrent, et le plateau se plafonne à
+  la hauteur qui reste (`calc(100dvh - 330px)`). Plateau et boutons tiennent
+  alors ensemble à l'écran ; rien ne change au-dessus de ce palier.
+
+  Trouvé dans le simulateur iOS de Xcode : WebKit sur macOS annonce 667 px de
+  haut pour ce téléphone, sans compter la barre de Safari.
+
 ## Version 1.3.1
 
 - **les explosions retombent sur les pierres.** Le flash blanc était centré par
