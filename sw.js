@@ -8,10 +8,13 @@
 //
 // Le nom du cache porte la version exacte de package.json : changer de version,
 // c'est changer de cache, et l'ancien est purgé à l'activation.
-const VERSION = 'diamants-1.3.2';
+const VERSION = 'diamants-1.4.0';
 const COQUILLE = [
   './',
   'index.html',
+  'commun/passeport.js',
+  'commun/liaison.js',
+  'commun/passeport.css',
   'manifest.webmanifest',
   'css/palettes.css',
   'css/plateau.css',

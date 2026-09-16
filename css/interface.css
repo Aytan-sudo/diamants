@@ -6,8 +6,13 @@ body {
   margin: 0;
   min-height: 100dvh;
   padding: clamp(0.6rem, 2.5vmin, 1.6rem);
+  /* En colonne, et non en ligne : le bandeau du passeport est un frère de
+     `.jeu`, et une rangée les aurait mis épaule contre épaule — le jeu partait
+     alors hors de l'écran. Sans gouttière ici, le bandeau ne coûte que ses
+     44 px. */
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   /* Le fond n'est jamais plat : deux halos posent une profondeur de vitrine,
      et la page cesse de ressembler à une feuille de papier. */
   background:
@@ -19,6 +24,8 @@ body {
   font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
+
+.passeport-ruban { width: min(100%, 33rem); }
 
 .jeu {
   width: min(100%, 33rem);
@@ -435,5 +442,6 @@ dialog p { margin: 0 0 0.9rem; line-height: 1.55; }
   .badge, .aide { display: none; }
   .commandes { gap: 0.3rem; padding: 0.35rem; }
   .commande { padding: 0.25rem 0.4rem; font-size: 0.72rem; }
-  .plateau { width: min(100%, calc(100dvh - 330px)); margin-inline: auto; }
+  /* 374 px : le reste de la page, bandeau du passeport compris. */
+  .plateau { width: min(100%, calc(100dvh - 374px)); margin-inline: auto; }
 }

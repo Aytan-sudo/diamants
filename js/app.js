@@ -13,7 +13,7 @@ import {
 } from './objectifs.js';
 import { texteDuJour, textePartieLibre, lienSms, lireFragment, emojiDe, URL_JEU } from './partage.js';
 import { AMBIANCES, JEUX_DE_PIERRES, REGLAGES_PAR_DEFAUT, appliquer as appliquerThemes } from './themes.js';
-import { lire, ecrire, oublier } from './storage.js';
+import { lire, ecrire, oublier, compterEchangePasseport } from './storage.js';
 import * as son from './son.js';
 import { graineAleatoire } from './alea.js';
 
@@ -305,6 +305,7 @@ async function tenter(a, b) {
     }
 
     vibrer(12);
+    noterPasseport({ echange: true });   // un échange qui aligne, jamais un refus
     coupsJoues.push([a, b]);
     await rendu.jouerCoup(avant, resultat);
     if (resultat.melanges) {
@@ -316,6 +317,16 @@ async function tenter(a, b) {
     sauvegarder();
     occupe = false;
     verifierFin();
+}
+
+// Le tampon du passeport : le défi du jour réussi le donne tout de suite ;
+// sinon, c'est le vingtième échange de la journée, tous modes confondus. En
+// mode invité, rien n'est compté ni écrit.
+function noterPasseport({ echange = false, reussite = false } = {}) {
+    const joueur = globalThis.Passeport;
+    if (!joueur?.profilId) return;
+    const echanges = echange ? compterEchangePasseport(joueur.jourLocal()) : 0;
+    if (echanges !== null) joueur.noter('diamants', echanges, reussite);
 }
 
 function verifierFin() {
@@ -332,6 +343,9 @@ function terminer() {
     arreterChrono();
     sauvegarder();
     const reussi = mode === 'jour' ? defiReussi(partie, defi) : true;
+    // Seul le défi du jour vaut réussite : en libre, la partie « se termine »
+    // toujours, et le tampon ne récompenserait plus rien.
+    if (mode === 'jour' && reussi) noterPasseport({ reussite: true });
     enregistrerStats(reussi);
     if (reussi) son.victoire(); else son.echec();
     vibrer(reussi ? [30, 45, 30] : 60);

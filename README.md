@@ -2,6 +2,23 @@
 
 Match-3 statique pour navigateur, sur le thème des pierres précieuses. On échange deux pierres voisines pour en aligner au moins trois ; les cascades multiplient les points. Chaque jour, une grille identique pour tout le monde et des commandes à honorer en un nombre de coups fixe.
 
+## Version 1.4.0 — Le passeport commun
+
+Ouvert depuis le hub avec un passeport, le jeu range réglages, statistiques et
+défi du jour dans l’espace du joueur ; en mode invité, rien ne change. Un bandeau
+rappelle le profil et la consigne du jour.
+
+Le tampon **Logique** récompense l’effort ou la réussite, au premier des deux :
+le défi du jour réussi, commandes remplies, le donne tout de suite ; sinon, c’est
+le vingtième échange de la journée, tous modes confondus. Un échange qui n’aligne
+rien ne compte pas. En partie libre, la fin de partie ne vaut pas réussite : elle
+arrive de toute façon.
+
+La page est passée en colonne : `body` était un `flex` en ligne, et le bandeau
+posé à côté du jeu s’est retrouvé épaule contre épaule avec lui — le plateau
+partait hors de l’écran. Le vrai Safari du simulateur l’a montré tout de suite,
+là où la largeur seule ne disait rien.
+
 ## Version 1.3.2
 
 - **le jeu entier tient dans un iPhone SE.** Safari d'iOS 26 n'y laisse que

@@ -142,11 +142,16 @@ test('les proclamations montent, et commencent à la deuxième cascade', () => {
 test('l’ambiance mémorisée est posée avant le premier rendu', () => {
     // Sinon la page s'ouvre en Écrin puis clignote vers l'ambiance choisie.
     const tete = page.slice(0, page.indexOf('</head>'));
-    assert.ok(tete.includes("localStorage.getItem('diamants:reglages')"), 'pas de script inline de restauration');
+    assert.ok(tete.includes("getItem('diamants:reglages')"), 'pas de script inline de restauration');
+    // Avec un passeport, les réglages sont ceux du joueur ; sans, ceux de
+    // l'appareil. Les deux chemins visent la même clé.
+    assert.ok(tete.includes("Passeport?.stockageJeu('diamants')"), 'le script ignore le passeport');
     // Inline et sans `type="module"` : un module est différé, il s'exécuterait
     // après la peinture — exactement le clignotement qu'on cherche à éviter.
-    const inline = tete.slice(tete.indexOf('<script'));
-    assert.ok(inline.startsWith('<script>'), 'le script de restauration est différé');
+    // Le passeport le précède sans `defer` : son espace est prêt à temps.
+    assert.ok(tete.includes('<script src="commun/passeport.js"></script>'), 'le passeport est différé');
+    const inline = tete.slice(tete.indexOf('<script>'));
+    assert.ok(inline.includes("getItem('diamants:reglages')"), 'le script de restauration est différé');
     // Le script inline connaît sa propre liste : elle doit suivre themes.js.
     for (const { cle } of [...AMBIANCES, ...JEUX_DE_PIERRES]) {
         assert.ok(tete.includes(cle), `${cle} manque au script de restauration`);

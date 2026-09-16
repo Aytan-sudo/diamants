@@ -12,12 +12,18 @@
   <link rel="stylesheet" href="css/palettes.css">
   <link rel="stylesheet" href="css/plateau.css">
   <link rel="stylesheet" href="css/interface.css">
+  <link rel="stylesheet" href="commun/passeport.css">
+  <script src="commun/passeport.js"></script>
+  <script src="commun/liaison.js" defer></script>
   <script>
     /* L'ambiance mémorisée se pose avant le premier rendu. Laissée à app.js,
        elle arriverait après la peinture : la page s'ouvrirait en Écrin, puis
        clignoterait vers Vitrine sous les yeux du joueur. */
     try {
-      const reglages = JSON.parse(localStorage.getItem('diamants:reglages') || '{}') || {};
+      /* Avec un passeport, les reglages sont ceux du joueur ; en mode invite,
+         ceux de l'appareil, comme avant. */
+      const magasin = globalThis.Passeport?.stockageJeu('diamants') || localStorage;
+      const reglages = JSON.parse(magasin.getItem('diamants:reglages') || '{}') || {};
       const racine = document.documentElement;
       if (/^(nebuleuse|ecrin|onyx|pourpre|malachite|vitrine)$/.test(reglages.ambiance)) racine.dataset.ambiance = reglages.ambiance;
       if (/^(arcade|joaillerie|mineraux|neon|contraste)$/.test(reglages.pierres)) racine.dataset.pierres = reglages.pierres;
@@ -167,6 +173,9 @@
     </symbol>
   </svg>
 
+  <div class="passeport-ruban" data-passeport-ruban data-jeu="diamants"
+       data-consigne="Tampon : le défi du jour ou 20 échanges"></div>
+
   <main class="jeu">
     <header class="entete">
       <div>
@@ -287,7 +296,7 @@
       <span>Animations</span>
       <div class="choix" id="choix-mouvement" role="radiogroup" aria-label="Animations"></div>
     </div>
-    <p class="version" id="version">Diamants 1.3.2</p>
+    <p class="version" id="version">Diamants 1.4.0</p>
     <div class="actions">
       <button id="reglages-fermer" class="bouton-principal" type="button">Fermer</button>
     </div>
